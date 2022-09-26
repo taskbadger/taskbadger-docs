@@ -4,7 +4,9 @@ theme:
   logo: assets/logo_white.png
   favicon: assets/favicon.ico
   palette:
-    - scheme: indigo
+    scheme: slate
+    palette:
+      primary: indigo
   features:
     - navigation.tracking
     - content.code.annotate
