@@ -1,0 +1,28 @@
+
+``` mermaid
+erDiagram
+  Task ||--|{ TaskHistory : ""
+  Task {
+    name string
+    status enum
+    value integer
+  }
+  TaskHistory {
+    date datetime
+    status enum
+    value integer
+  }
+  Task ||--o{ ActionDefinition : ""
+  ActionDefinition {
+    integration enum "One of the available integrations for the project"
+    definition string "A ctontab style expression"
+    status enum
+  }
+  ActionDefinition ||--|{ ActionInstance : ""
+  ActionInstance {
+    status enum
+    triggered datetime
+    complete datetime
+    log string
+  }
+```

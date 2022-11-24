@@ -1,5 +1,5 @@
 ---
-title: Task Model
+title: Data Model
 ---
 # Task Badgers' Data Model
 
@@ -69,7 +69,7 @@ Here are some examples:
 4. During the data export the export function regularly updates the task progress which is also displayed
    on the UI for the user.
 5. Once the export is compiled the export function updates the task value to 100 and the state to
-   `post-processing`. During this time the export function uploads the compiled export to S3.
+   `post_processing`. During this time the export function uploads the compiled export to S3.
 6. Once the upload is complete the task status is updated to `success` and the user is presented with
    an option to download the export.
 
@@ -86,7 +86,7 @@ The backed export function could check the task state periodically and exit earl
 
 
 #### Execution states
-<a id="state-pre-processing"></a>`pre-processing`
+<a id="state-pre_processing"></a>`pre_processing`
 
 :   In this state a task has not yet begun iterating through its dataset, but it may be doing preliminary
     work. For example, loading data from a file prior to iterating.
@@ -96,7 +96,7 @@ The backed export function could check the task state periodically and exit earl
 :   This is the main state of a task during which it is iterating through the data and incrementing its
     progress as it goes by updating its `value`.
 
-<a id="state-post-processing"></a>`post-processing`
+<a id="state-post_processing"></a>`post_processing`
 
 :   Having completed processing a task may perform additional work to clean up or finalize the task.
 
@@ -107,7 +107,7 @@ modified again.
 <a id="state-success"></a>`success`
 
 :   The task has completed successfully. Typically, a task would move to this state from the `processing` or
-    `post-processing` state.
+    `post_processing` state.
 
 <a id="state-error"></a>`error`
 
@@ -116,31 +116,3 @@ modified again.
 <a id="state-cancelled"></a>`cancelled`
 
 :   The task has been cancelled. A task may take on this state at any point.
-
-``` mermaid
-erDiagram
-  Task ||--|{ TaskHistory : ""
-  Task {
-    name string
-    status enum
-    value integer
-  }
-  TaskHistory {
-    date datetime
-    status enum
-    value integer
-  }
-  Task ||--o{ ActionDefinition : ""
-  ActionDefinition {
-    integration enum "One of the available integrations for the project"
-    definition string "A ctontab style expression"
-    status enum
-  }
-  ActionDefinition ||--|{ ActionInstance : ""
-  ActionInstance {
-    status enum
-    triggered datetime
-    complete datetime
-    log string
-  }
-```
