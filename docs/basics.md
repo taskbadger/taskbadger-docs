@@ -60,7 +60,7 @@ indicating that is no next or previous page but will otherwise contain the full 
 The cursors can be used to navigate forwards or backwards through the data. For example:
 
 ```
-GET https://taskbadger.net/api/{organization}/{project}/tasks/?limit=2
+GET https://taskbadger.net/api/{organization}/{project}/tasks/?page_size=2
 ```
 
 This will respond with tasks in pages of size 2:
@@ -68,7 +68,7 @@ This will respond with tasks in pages of size 2:
 ```json
 {
   "previous": null,
-  "next": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=XXX&limit=2",
+  "next": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=XXX&page_size=2",
   "results": [{...}, {...}]
 }
 ```
@@ -76,22 +76,22 @@ This will respond with tasks in pages of size 2:
 To access the next page of data make a request to the URL provided in the `next` field:
 
 ```
-GET https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=XXX&limit=2
+GET https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=XXX&page_size=2
 ```
 
 The response will now include both `next` and `previous` page URLs.
 
 ```json
 {
-  "previous": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=YYY&limit=2",
-  "next": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=ZZZ&limit=2",
+  "previous": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=YYY&page_size=2",
+  "next": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=ZZZ&page_size=2",
   "results": [{...}, {...}]
 }
 ```
 
 !!!tip
 
-    The `limit` parameter can be changed at any point to adjust the page size of the request.
+    The `page_size` parameter can be changed at any point to adjust the page size of the request.
 
 
 ## Rate Limiting
@@ -112,4 +112,4 @@ Retry-After: 30
 The Task Badger API includes an endpoint for downloading the OpenAPI 2.0 specification which describes
 the requests and responses.
 
-Download the spec from [taskbadger.net](https://taskbadger.net/api/schema.json)
+Download the spec from [taskbadger.net](https://taskbadger.net/api/schema.json){:target="_blank"}

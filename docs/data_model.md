@@ -3,6 +3,10 @@ title: Data Model
 ---
 # Task Badgers' Data Model
 
+!!!tip
+
+        Download the OpenAPI schema from [https://taskbadger.net/api/schema.json](https://taskbadger.net/api/schema.json){:target="_blank"}
+
 ## Task
 
 Naturally, the **Task** is the core data model for Task Badger. Almost all operations are related
@@ -28,6 +32,24 @@ Tasks have three main attributes:
 
 :   The **value** of a task indicates its progress in the [`processing`](#state-processing) state. By default,
     the value range is from 0 to 100. This attribute is you can track a tasks active progress. 
+
+### Example Task
+
+```json
+{
+  "id": "57ae8eVBrH7jbDgmYj6Ut2vR9S",
+  "organization": "example_org",
+  "project": "example_project",
+  "name": "example task",
+  "status": "processing",
+  "value": 42,
+  "data": {
+    "property1": "customValue"
+  },
+  "created": "2022-08-24T14:15:22Z",
+  "updated": "2022-08-24T16:15:22Z"
+}
+```
 
 ## Task Lifecycle
 
@@ -116,3 +138,43 @@ modified again.
 <a id="state-cancelled"></a>`cancelled`
 
 :   The task has been cancelled. A task may take on this state at any point.
+
+
+## Task Actions
+
+Actions are at the core of Task Badger's secret sauce. They allow you to send notifications, perform callouts,
+and more based on task events.
+
+Every action specifies an integration e.g. `email`, and a trigger definition which is
+like a crontab expression, but for tasks. For example, `*/25%,success` means, "execute
+this action when the task value passes 25%, 50%, 75%, 100% and when the task status
+is set to `success`".
+
+A task may have multiple actions, each with their own integration and trigger definition.
+
+Here is an example of an action:
+
+```json
+{
+  "id": 640,
+  "task": "57ae8eVBrH7jbDgmYj6Ut2vR9S",
+  "trigger": "success,error",
+  "integration": "email",
+  "status": "active",
+  "config": {
+    "to": "me@example.com,you@example.com"
+  },
+  "created": "2022-11-16T07:10:30.551808Z",
+  "updated": "2022-11-16T07:10:30.551818Z"
+}
+```
+
+
+### Action Edge cases
+
+If a task value or status skips past multiple trigger points, only the last matching trigger will be
+executed.
+
+For example, an action configured with `20,40,80` whose value goes from `0` directly to `90` will
+skip over the `20` and `40` events and only fire the `80` event. This also applies to task
+status triggers.
