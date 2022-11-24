@@ -13,7 +13,7 @@ data.
 === "shell"
 
     ```shell
-    $ curl -X POST https://taskbadger.net/api/0/{organization}/{project}/tasks/ \
+    $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"name": "demo task", "status": "pending"}'
@@ -45,7 +45,7 @@ Here we update the task `status` and `value`. By default, a task's value can ran
 === "shell"
     
     ```shell title="Request"
-    $ curl -X PATCH https://taskbadger.net/api/0/{organization}/{project}/tasks/{task-id} \
+    $ curl -X PATCH https://taskbadger.net/api/{organization}/{project}/tasks/{task-id} \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"status": "pending", "value": 5}'
@@ -59,7 +59,7 @@ The value may also be updated to 100.
 === "shell"
 
     ```shell title="Request"
-    $ curl -X PATCH https://taskbadger.net/api/0/{organization}/{project}/tasks/{task-id} \
+    $ curl -X PATCH https://taskbadger.net/api/{organization}/{project}/tasks/{task-id} \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"status": "success", "value": 100}'

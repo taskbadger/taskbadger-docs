@@ -14,7 +14,7 @@ Requests must be authenticated by providing a bearer token provided
 in the Authentication header.
 
 ```linenums="1" hl_lines="2"
-POST https://taskbadger.net/api/0/{organization}/{project}/tasks/
+POST https://taskbadger.net/api/{organization}/{project}/tasks/
 Authorization: Bearer xxxx
 Content-type: application/json
 {"name":"demo task","status":"pending"}
@@ -32,7 +32,7 @@ to `application/x-www-form-urlencoded`.
 For example:
 
 ```linenums="1" hl_lines="3 4"
-POST https://taskbadger.net/api/0/{organization}/{project}/tasks/
+POST https://taskbadger.net/api/{organization}/{project}/tasks/
 Authorization: Bearer xxxx
 Content-type: application/x-www-form-urlencoded
 name=demo%20task&status=pending
@@ -46,7 +46,7 @@ Without this header the data won't be interpreted as JSON.
 For example:
 
 ```linenums="1" hl_lines="3 4"
-POST https://taskbadger.net/api/0/{organization}/{project}/tasks/
+POST https://taskbadger.net/api/{organization}/{project}/tasks/
 Authorization: Bearer xxxx
 Content-type: application/json
 {"name":"demo task","status":"pending"}
@@ -60,7 +60,7 @@ indicating that is no next or previous page but will otherwise contain the full 
 The cursors can be used to navigate forwards or backwards through the data. For example:
 
 ```
-GET https://taskbadger.net/api/0/{organization}/{project}/tasks/?limit=2
+GET https://taskbadger.net/api/{organization}/{project}/tasks/?limit=2
 ```
 
 This will respond with tasks in pages of size 2:
@@ -68,7 +68,7 @@ This will respond with tasks in pages of size 2:
 ```json
 {
   "previous": null,
-  "next": "https://taskbadger.net/api/0/{organization}/{project}/tasks/?cursor=XXX&limit=2",
+  "next": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=XXX&limit=2",
   "results": [{...}, {...}]
 }
 ```
@@ -76,15 +76,15 @@ This will respond with tasks in pages of size 2:
 To access the next page of data make a request to the URL provided in the `next` field:
 
 ```
-GET https://taskbadger.net/api/0/{organization}/{project}/tasks/?cursor=XXX&limit=2
+GET https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=XXX&limit=2
 ```
 
 The response will now include both `next` and `previous` page URLs.
 
 ```json
 {
-  "previous": "https://taskbadger.net/api/0/{organization}/{project}/tasks/?cursor=YYY&limit=2",
-  "next": "https://taskbadger.net/api/0/{organization}/{project}/tasks/?cursor=ZZZ&limit=2",
+  "previous": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=YYY&limit=2",
+  "next": "https://taskbadger.net/api/{organization}/{project}/tasks/?cursor=ZZZ&limit=2",
   "results": [{...}, {...}]
 }
 ```
