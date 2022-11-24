@@ -1,7 +1,11 @@
 ---
-title: Task Model
+title: Data Model
 ---
 # Task Badgers' Data Model
+
+!!!tip
+
+        Download the OpenAPI schema from [https://taskbadger.net/api/schema.json](https://taskbadger.net/api/schema.json){:target="_blank"}
 
 ## Task
 
@@ -28,6 +32,24 @@ Tasks have three main attributes:
 
 :   The **value** of a task indicates its progress in the [`processing`](#state-processing) state. By default,
     the value range is from 0 to 100. This attribute is you can track a tasks active progress. 
+
+### Example Task
+
+```json
+{
+  "id": "57ae8eVBrH7jbDgmYj6Ut2vR9S",
+  "organization": "example_org",
+  "project": "example_project",
+  "name": "example task",
+  "status": "processing",
+  "value": 42,
+  "data": {
+    "property1": "customValue"
+  },
+  "created": "2022-08-24T14:15:22Z",
+  "updated": "2022-08-24T16:15:22Z"
+}
+```
 
 ## Task Lifecycle
 
@@ -69,7 +91,7 @@ Here are some examples:
 4. During the data export the export function regularly updates the task progress which is also displayed
    on the UI for the user.
 5. Once the export is compiled the export function updates the task value to 100 and the state to
-   `post-processing`. During this time the export function uploads the compiled export to S3.
+   `post_processing`. During this time the export function uploads the compiled export to S3.
 6. Once the upload is complete the task status is updated to `success` and the user is presented with
    an option to download the export.
 
@@ -86,7 +108,7 @@ The backed export function could check the task state periodically and exit earl
 
 
 #### Execution states
-<a id="state-pre-processing"></a>`pre-processing`
+<a id="state-pre_processing"></a>`pre_processing`
 
 :   In this state a task has not yet begun iterating through its dataset, but it may be doing preliminary
     work. For example, loading data from a file prior to iterating.
@@ -96,7 +118,7 @@ The backed export function could check the task state periodically and exit earl
 :   This is the main state of a task during which it is iterating through the data and incrementing its
     progress as it goes by updating its `value`.
 
-<a id="state-post-processing"></a>`post-processing`
+<a id="state-post_processing"></a>`post_processing`
 
 :   Having completed processing a task may perform additional work to clean up or finalize the task.
 
@@ -107,7 +129,7 @@ modified again.
 <a id="state-success"></a>`success`
 
 :   The task has completed successfully. Typically, a task would move to this state from the `processing` or
-    `post-processing` state.
+    `post_processing` state.
 
 <a id="state-error"></a>`error`
 
@@ -117,30 +139,42 @@ modified again.
 
 :   The task has been cancelled. A task may take on this state at any point.
 
-``` mermaid
-erDiagram
-  Task ||--|{ TaskHistory : ""
-  Task {
-    name string
-    status enum
-    value integer
-  }
-  TaskHistory {
-    date datetime
-    status enum
-    value integer
-  }
-  Task ||--o{ ActionDefinition : ""
-  ActionDefinition {
-    integration enum "One of the available integrations for the project"
-    definition string "A ctontab style expression"
-    status enum
-  }
-  ActionDefinition ||--|{ ActionInstance : ""
-  ActionInstance {
-    status enum
-    triggered datetime
-    complete datetime
-    log string
-  }
+
+## Task Actions
+
+Actions are at the core of Task Badger's secret sauce. They allow you to send notifications, perform callouts,
+and more based on task events.
+
+Every action specifies an integration e.g. `email`, and a trigger definition which is
+like a crontab expression, but for tasks. For example, `*/25%,success` means, "execute
+this action when the task value passes 25%, 50%, 75%, 100% and when the task status
+is set to `success`".
+
+A task may have multiple actions, each with their own integration and trigger definition.
+
+Here is an example of an action:
+
+```json
+{
+  "id": 640,
+  "task": "57ae8eVBrH7jbDgmYj6Ut2vR9S",
+  "trigger": "success,error",
+  "integration": "email",
+  "status": "active",
+  "config": {
+    "to": "me@example.com,you@example.com"
+  },
+  "created": "2022-11-16T07:10:30.551808Z",
+  "updated": "2022-11-16T07:10:30.551818Z"
+}
 ```
+
+
+### Action Edge cases
+
+If a task value or status skips past multiple trigger points, only the last matching trigger will be
+executed.
+
+For example, an action configured with `20,40,80` whose value goes from `0` directly to `90` will
+skip over the `20` and `40` events and only fire the `80` event. This also applies to task
+status triggers.
