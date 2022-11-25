@@ -45,10 +45,23 @@ Here we update the task `status` and `value`. By default, a task's value can ran
 === "shell"
     
     ```shell title="Request"
-    $ curl -X PATCH https://taskbadger.net/api/{organization}/{project}/tasks/{task-id} \
+    $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"status": "pending", "value": 5}'
+    ```
+
+## Add an action to the task
+
+Here we update create a new action for the task so that we get notified when the task completes.
+
+=== "shell"
+    
+    ```shell title="Request"
+    $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
+      -H "Authorization: Bearer $API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"actions":[{"integration":"email","trigger":"success,error","config":{"to":"me@example.com"}}]}'
     ```
 
 ## Mark the task complete
@@ -59,8 +72,9 @@ The value may also be updated to 100.
 === "shell"
 
     ```shell title="Request"
-    $ curl -X PATCH https://taskbadger.net/api/{organization}/{project}/tasks/{task-id} \
+    $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"status": "success", "value": 100}'
     ```
+Also check your email to see if you got the notification.
