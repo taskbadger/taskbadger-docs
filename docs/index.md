@@ -16,7 +16,7 @@ data.
     $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
-      -d '{"name": "demo task", "status": "pending"}'
+      -d '{"name": "demo task"}'
     ```
 
 The response will include the task ID which is needed for updating the task.
@@ -48,7 +48,7 @@ Here we update the task `status` and `value`. By default, a task's value can ran
     $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
-      -d '{"status": "pending", "value": 5}'
+      -d '{"status": "processing", "value": 5}'
     ```
 
 ## Add an action to the task
