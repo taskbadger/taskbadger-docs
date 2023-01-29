@@ -31,7 +31,18 @@ Tasks have three main attributes:
 `value`
 
 :   The **value** of a task indicates its progress in the [`processing`](#state-processing) state. By default,
-    the value range is from 0 to 100. This attribute is you can track a tasks active progress. 
+    the value range is from 0 to 100 (see **value_max**). 
+
+`value_max`
+
+:   This represents the **value** a task is expected to reach when it is complete.
+    The default for **value_max** is **100**, but it can be changed to any value e.g. the total number o
+    items to be processed.
+
+`value_percent`
+
+:   This is a computed percentage which is equivalent to `100 * value / value_percent`. This may be `null`
+    if **value** is null.
 
 ### Example Task
 
@@ -43,6 +54,8 @@ Tasks have three main attributes:
   "name": "example task",
   "status": "processing",
   "value": 42,
+  "value_max": 200,
+  "value_percent": 21,
   "data": {
     "property1": "customValue"
   },

@@ -20,27 +20,10 @@ Content-type: application/json
 {"name":"demo task","status":"pending"}
 ```
 
-## POST Bodies
+## Request bodies
 
-The payload of HTTP POST requests may be specified as either standard POST parameters
-or JSON.
-
-### URL-encoded bodies
-When sending URL-encoded data, the HTTP `Content-Type` header should be set
-to `application/x-www-form-urlencoded`. 
-
-For example:
-
-```linenums="1" hl_lines="3 4"
-POST https://taskbadger.net/api/{organization}/{project}/tasks/
-Authorization: Bearer xxxx
-Content-type: application/x-www-form-urlencoded
-name=demo%20task&status=pending
-```
-
-### JSON-encoded bodies
-
-POST data may also be sent in JSON-encoded format. The Content-type HTTP header must be set to `application/json`
+The payload of HTTP POST requests must be specified as JSON. 
+The Content-type HTTP header must be set to `application/json`
 Without this header the data won't be interpreted as JSON.
 
 For example:
@@ -51,6 +34,18 @@ Authorization: Bearer xxxx
 Content-type: application/json
 {"name":"demo task","status":"pending"}
 ```
+
+## Request methods
+
+Task Badger uses standard REST methods: 
+
+| Method | Function                                      |
+|--------|-----------------------------------------------|
+| GET    | Retrieve an object or list of objects         |
+| POST   | Create an object                              |
+| PUT    | Update an object (complete data required)     |
+| PATCH  | Update an object (partial data required)      |
+| DELETE | Delete or mark object as deleted or cancelled |
 
 ## Pagination
 

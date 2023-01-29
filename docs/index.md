@@ -45,7 +45,7 @@ Here we update the task `status` and `value`. By default, a task's value can ran
 === "shell"
     
     ```shell title="Request"
-    $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
+    $ curl -X PATCH https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"status": "processing", "value": 5}'
@@ -58,7 +58,7 @@ Here we update create a new action for the task so that we get notified when the
 === "shell"
     
     ```shell title="Request"
-    $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
+    $ curl -X PATCH https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"actions":[{"integration":"email","trigger":"success,error","config":{"to":"me@example.com"}}]}'
@@ -72,7 +72,7 @@ The value may also be updated to 100.
 === "shell"
 
     ```shell title="Request"
-    $ curl -X POST https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
+    $ curl -X PATCH https://taskbadger.net/api/{organization}/{project}/tasks/{task-id}/ \
       -H "Authorization: Bearer $API_KEY" \
       -H "Content-Type: application/json" \
       -d '{"status": "success", "value": 100}'
