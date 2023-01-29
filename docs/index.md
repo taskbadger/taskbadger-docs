@@ -29,6 +29,8 @@ The response will include the task ID which is needed for updating the task.
   "name":"demo task",
   "status":"pending",
   "value":null,
+  "value_max":null,
+  "value_percent":null,
   "data":null,
   "created":"2022-09-22T06:53:40.683555Z",
   "updated":"2022-09-22T06:53:40.683555Z"
