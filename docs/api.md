@@ -17,7 +17,7 @@ task URL is:
 | Cancel task         | `DELETE /api/{org}/{project}/tasks/{task_id}`                                                                                 |
 | List task actions   | `GET /api/{org}/{project}/tasks/{task_id}/actions/`                                                                           |
 | Add task action     | `POST /api/{org}/{project}/tasks/{task_id}/actions/`<br/>(alternately POST to 'update task' endpoint with {"actions": [...]}) |
-| Update task action  | `PATCJ /api/{org}/{project}/tasks/{task_id}/actions/{action_id}/`                                                             |
+| Update task action  | `PATCH /api/{org}/{project}/tasks/{task_id}/actions/{action_id}/`                                                             |
 | Cancel task action  | `DELETE /api/{org}/{project}/tasks/{task_id}/actions/{action_id}/`                                                            |
 
 
