@@ -5,7 +5,7 @@ on:
       - main
 
 permissions:
-  pages: read/write
+  pages: write
 
 jobs:
   deploy:
