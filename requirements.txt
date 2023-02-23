@@ -1,2 +1,3 @@
 invoke
 mkdocs-material
+mkdocstrings[python]
