@@ -15,7 +15,7 @@ to a task.
 Every Task must belong to a **Project**. You can think of a project as a single 'system' or piece of software.
 Assigning tasks to a Project is useful when it comes to data segregation and metrics.
 
-Tasks have three main attributes:
+The main attributes or a task are:
 
 `name`
 
@@ -25,8 +25,7 @@ Tasks have three main attributes:
 
 `status`
 
-:   The **status** of the task indices where it is in the [task lifecycle](#task-lifecycle)
-
+:   The **status** of the task indicates where it is in the [task lifecycle](#task-lifecycle)
 
 `value`
 
@@ -41,8 +40,13 @@ Tasks have three main attributes:
 
 `value_percent`
 
-:   This is a computed percentage which is equivalent to `100 * value / value_percent`. This may be `null`
+:   This is a computed percentage which is equivalent to `100 * value / value_max`. This will be `null`
     if **value** is null.
+
+`data`
+
+:   This can be used to store arbitrary JSON data that may be useful to store along with the task such
+    as task arguments.
 
 ### Example Task
 
