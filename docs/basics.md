@@ -8,10 +8,16 @@ title: Using the API
 API endpoints include both the `organization` and `project` slug. The user authenticating
 the request must have access to both for the request to be accepted.
 
+* Organization slug
+    * You can get this by going to 'My Organization'  
+* Project slug
+    * Go to the 'Projects' page. The slug for each project is listed. 
+
 ## Authentication
 
 Requests must be authenticated by providing a bearer token provided
-in the Authentication header.
+in the Authentication header. You can generate a token by going to your
+[user profile page](https://taskbadger.net/users/profile/).
 
 ```linenums="1" hl_lines="2"
 POST https://taskbadger.net/api/{organization}/{project}/tasks/

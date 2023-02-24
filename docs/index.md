@@ -63,16 +63,16 @@ data.
     ```json title="Response"
     {
       "id": "${TASK_ID}",
-      "organization":"{organization}",
+      "organization": "{organization}",
       "project": "{project}",
-      "name":"demo task",
-      "status":"pending",
-      "value":null,
-      "value_max":null,
-      "value_percent":null,
-      "data":null,
-      "created":"2022-09-22T06:53:40.683555Z",
-      "updated":"2022-09-22T06:53:40.683555Z"
+      "name": "demo task",
+      "status": "pending",
+      "value": null,
+      "value_max": null,
+      "value_percent": null,
+      "data": null,
+      "created": "2022-09-22T06:53:40.683555Z",
+      "updated": "2022-09-22T06:53:40.683555Z"
     }
     ```
 
