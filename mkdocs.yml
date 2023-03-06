@@ -42,3 +42,20 @@ nav:
   - 'data_model.md'
   - 'api.md'
   - 'integrations.md'
+  - 'Python SDK': 'python.md'
+
+plugins:
+- mkdocstrings:
+    handlers:
+      python:
+        import:
+          - https://docs.python-requests.org/en/master/objects.inv
+        paths:
+          - !ENV [TB_PYTHON_SRC, '../taskbadger-python']
+        options:
+          show_root_heading: true
+          show_source: False
+          show_signature_annotations: True
+          separate_signature: True
+          members_order: source
+          heading_level: 3
