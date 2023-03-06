@@ -124,6 +124,8 @@ Here we update create a new action for the task so that we get notified when the
       -d '{"actions":[{"integration":"email","trigger":"success,error","config":{"to":"me@example.com"}}]}'
     ```
 
+Read more about [actions](data_model.md#task-actions).
+
 ## Mark the task complete
 
 When the task is complete update the status to either `success` or `error`.

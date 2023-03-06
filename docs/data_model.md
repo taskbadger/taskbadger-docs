@@ -162,7 +162,7 @@ modified again.
 Actions are at the core of Task Badger's secret sauce. They allow you to send notifications, perform callouts,
 and more based on task events.
 
-Every action specifies an integration e.g. `email`, and a trigger definition which is
+Every action specifies an [integration](integrations.md) e.g. `email`, and a trigger definition which is
 like a crontab expression, but for tasks. For example, `*/25%,success` means, "execute
 this action when the task value passes 25%, 50%, 75%, 100% and when the task status
 is set to `success`".
