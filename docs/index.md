@@ -7,7 +7,7 @@ Let's discover **Task Badger in less than 5 minutes**.
 
 ## Setup
 
-In order to use the API you will need the follwing details:
+In order to use the API you will need the following details:
 
 * Organization slug
     * You can get this by going to 'My Organization'  
@@ -31,9 +31,9 @@ In order to use the API you will need the follwing details:
 === "Shell"
 
     ```shell
-    export ORG="organization slug"
-    export PROJECT="project slug"
-    export API_KEY="api key"
+    export ORG="my-org"
+    export PROJECT="my-project"
+    export API_KEY="***"
     ```
 
 ## Creating a task
@@ -62,9 +62,9 @@ data.
     
     ```json title="Response"
     {
-      "id": "${TASK_ID}",
-      "organization": "{organization}",
-      "project": "{project}",
+      "id": "{task_id}",
+      "organization": "my-org",
+      "project": "my-project",
       "name": "demo task",
       "status": "pending",
       "value": null,
