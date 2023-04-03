@@ -7,6 +7,42 @@ The CLI (command line interface) is a tool that allows you to interface with
 Task Badger via the shell. This makes it easy to integrate it into workflows
 without the need to write any code.
 
+
+## Monitoring processes
+
+The main feature of the CLI is the `run` command which allows you to track tasks
+that are started from the command line:
+
+```bash
+$ taskbadger run "demo task" -- path/to/script.sh
+
+Task created: https://taskbadger.net/public/tasks/xyz/
+```
+
+The task status will be updated once the command completes.
+
+### Actions
+
+You can create actions for CLI tasks using the `--action` (`-a`) argument. The
+format for this argument is string with three components, separated by a space:
+
+```mermaid
+flowchart LR
+    trigger --- integration
+    integration --- config
+```
+
+The config parameter is a comma-separated list of key value pairs.
+
+Here is an example:
+
+```bash
+$ taskbadger run "demo task" --action "error email to:me@test.com" -- path/to/script.sh
+```
+
+If the task state becomes `stale` or `error`, use the `email` integration to
+send a notification to `me@test.com`.
+
 ## Configuration
 
 The CLI requires the same configuration as the API. This can be provided in one of
@@ -47,11 +83,9 @@ of the API Key.
 
 Use the following environment variable names to configure the CLI:
 
-```
-TASKBADGER_API_KEY
-TASKBADGER_ORG
-TASKBADGER_PROJECT
-```
+* `TASKBADGER_API_KEY`
+* `TASKBADGER_ORG`
+* `TASKBADGER_PROJECT`
 
 ### Configuration file
 
