@@ -21,17 +21,21 @@ Use Task Badger's CLI to monitor commands run from the shell.
 
 ### Install and configure the CLI
 
-```shell
+```bash
 $ python3 -m pip install taskbadger
 
 $ taskbadger configure
+
 Organization slug: my-org 
 Project slug: project-x 
-API Key: XYZ.ABC 
+API Key: XYZ.ABC
+
 Config written to ~/.config/taskbadger/confi
 ```
 
 This will give you the `taskbadger` shell command. Now lets run a task:
+
+### Run a command from the CLI
 
 ```shell
 $ taskbadger run "demo task" --action "error email to:me@test.com" -- path/to/script.sh
