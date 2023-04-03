@@ -48,6 +48,15 @@ The main attributes or a task are:
 :   This can be used to store arbitrary JSON data that may be useful to store along with the task such
     as task arguments.
 
+`max_runtime`
+
+:   This value represents the number of minutes a task can run for before being placed in the 'error' state.
+
+`stale_timeout`
+
+:    This represents the maximum number of minutes allowed between task updates. If a task does not receive
+     updates within this period it will be marked as 'stale'.
+
 ### Example Task
 
 ```json
@@ -63,8 +72,14 @@ The main attributes or a task are:
   "data": {
     "property1": "customValue"
   },
+  "max_runtime": null,
+  "stale_timeout": null,
+  "start_time": "2022-08-24T15:15:22Z",
+  "end_time": null,
   "created": "2022-08-24T14:15:22Z",
-  "updated": "2022-08-24T16:15:22Z"
+  "updated": "2022-08-24T16:15:22Z",
+  "url": "https://taskbadger.net/a/{example_org/tasks/57ae8eVBrH7jbDgmYj6Ut2vR9S/",
+  "public_url": "https://taskbadger.net/public/tasks/57ae8eVBrH7jbDgmYj6Ut2vR9S/"
 }
 ```
 
@@ -83,6 +98,7 @@ flowchart LR
     style pro stroke-width:2px
     style s stroke-width:2px
     
+    st(Stale)
     c(Cancelled)
     e(Error)
 ```
@@ -141,7 +157,7 @@ The backed export function could check the task state periodically and exit earl
 
 #### Terminal states
 These states are mutually exclusive, once a task reaches one of these states it is not expected to be
-modified again.
+modified again (with the potential exception of 'stale').
 
 <a id="state-success"></a>`success`
 
@@ -155,6 +171,11 @@ modified again.
 <a id="state-cancelled"></a>`cancelled`
 
 :   The task has been cancelled. A task may take on this state at any point.
+
+<a id="state-stale"></a>`stale`
+
+:   The task has become stale. This will happen if the task has not reached one of the other terminal
+    states AND the duration since it's last update exceeds the tasks 'stale_timeout' value.
 
 
 ## Task Actions
