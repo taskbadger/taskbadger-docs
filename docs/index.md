@@ -16,6 +16,41 @@ In order to use the API you will need the following details:
 * API Key
     * Create one on your Profile page
 
+## CLI
+Use Task Badger's CLI to monitor commands run from the shell.
+
+### Install and configure the CLI
+
+```shell
+$ python3 -m pip install taskbadger
+
+$ taskbadger configure
+Organization slug: my-org 
+Project slug: project-x 
+API Key: XYZ.ABC 
+Config written to ~/.config/taskbadger/confi
+```
+
+This will give you the `taskbadger` shell command. Now lets run a task:
+
+```shell
+$ taskbadger run "demo task" --action "error email to:me@test.com" -- path/to/script.sh
+Task created: https://taskbadger.net/public/tasks/xyz/
+```
+
+## Python Client
+
+### Setup
+
+In order to use the API you will need the following details:
+
+* Organization slug
+    * You can get this by going to 'My Organization'  
+* Project slug
+    * Go to the 'Projects' page. The slug for each project is listed. 
+* API Key
+    * Create one on your Profile page
+
 === "Python"
 
     ```python
@@ -36,7 +71,7 @@ In order to use the API you will need the following details:
     export API_KEY="***"
     ```
 
-## Creating a task
+### Creating a task
 
 Creating a task is very simple. Make a POST request to the API with the task
 data.
@@ -78,7 +113,7 @@ data.
 
 The task will now be listed in the task list: `https://taskbadger.net/a/${ORG}/tasks/`.
 
-## Update task progress
+### Update task progress
 
 Here we update the task `status` and `value`. By default, a task's value can range from
 0 to 100.
@@ -99,7 +134,7 @@ Here we update the task `status` and `value`. By default, a task's value can ran
       -d '{"status": "processing", "value": 5}'
     ```
 
-## Add an action to the task
+### Add an action to the task
 
 Here we update create a new action for the task so that we get notified when the task completes.
 
@@ -126,7 +161,7 @@ Here we update create a new action for the task so that we get notified when the
 
 Read more about [actions](data_model.md#task-actions).
 
-## Mark the task complete
+### Mark the task complete
 
 When the task is complete update the status to either `success` or `error`.
 The value may also be updated to 100.
