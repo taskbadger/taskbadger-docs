@@ -39,6 +39,7 @@ extra:
 nav:
   - 'index.md'
   - 'basics.md'
+  - 'cli.md'
   - 'data_model.md'
   - 'api.md'
   - 'integrations.md'
