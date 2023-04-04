@@ -7,6 +7,15 @@ The CLI (command line interface) is a tool that allows you to interface with
 Task Badger via the shell. This makes it easy to integrate it into workflows
 without the need to write any code.
 
+## Installation
+
+The CLI is bundled with the Python client library. To install it you need:
+
+* Python > X
+
+```shell
+$ python -m pip install -U taskbadger
+```
 
 ## Monitoring processes
 
@@ -19,7 +28,10 @@ $ taskbadger run "demo task" -- path/to/script.sh
 Task created: https://taskbadger.net/public/tasks/xyz/
 ```
 
-The task status will be updated once the command completes.
+The task status will be updated once the command completes. The task status
+will be `success` if the command has a zero exit code. Any other exit code
+will result in an `error` status and the exit code will be saved in the
+task data under the `return_code` key.
 
 ### Actions
 
