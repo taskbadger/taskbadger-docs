@@ -75,7 +75,45 @@ run.
 The CLI provides an easy way to monitor your tasks. To associate a task with a monitor simply
 provide the monitor ID:
 
-```bash
+
 ```bash
 $ taskbadger run "run script" --monitor-id=XYZ -- path/to/script.sh
 ```
+
+### Using the API
+
+=== "Python"
+
+    ```python
+    from taskbadger import Task, StatusEnum
+    task = Task.create(name"my-task", status=StatsuEnum.processing, monitor_id="XYZ")
+    try:
+        # Execute your task here...
+    except Exception as e:
+        task.error({
+            "exception": str(e)
+        })
+    else:
+        task.update(status=StatusEnum.success)
+    ```
+
+=== "Shell"
+
+    Using the API directly you can pass the monitor ID vai the `X-TASKBADGER-MONITOR`
+    header. The monitor ID only needs to be included in the request to create the task.
+
+    ``` { .shell hl_lines="3" }
+    curl -X POST "https://taskbadger.net/api/${ORG}/${PROJECT}/tasks/" \
+      -H "Authorization: Bearer ${API_KEY}" \
+      -H "X-TASKBADGER-MONITOR: %{MONITOR_ID}" \
+      -H "Content-Type: application/json" \
+      -d '{"name": "demo task", "status": "processing"}'
+    # Response { "id": "128aoa98e0fiq238" ...}
+
+    # Execute your scheduled task here...
+
+    curl -X PATCH "https://taskbadger.net/api/${ORG}/${PROJECT}/tasks/128aoa98e0fiq238/" \
+      -H "Authorization: Bearer ${API_KEY}" \
+      -H "Content-Type: application/json" \
+      -d '{"status": "success"}'    
+    ```
