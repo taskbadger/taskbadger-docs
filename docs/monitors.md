@@ -29,7 +29,7 @@ on real time.
 For example, a task that runs every 5 minutes where each task is scheduled after the previous task
 starts / ends.
 
-[//]: # (what about drift - make check-ins start after last end)
+[//]: # (TODO: what about drift - make check-ins start after last end)
 
 ## Cron Monitors
 
@@ -61,8 +61,8 @@ Here are some examples:
 
 For a more detailed explanation see [Wikipedia](https://en.wikipedia.org/wiki/Cron#Overview).
 
-[//]: # (grace period)
-[//]: # (max runtime)
+[//]: # (TODO: grace period)
+[//]: # (TODO: max runtime)
 
 
 ## Set Up
