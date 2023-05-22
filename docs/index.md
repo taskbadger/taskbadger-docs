@@ -167,7 +167,7 @@ Here we update create a new action for the task so that we get notified when the
             "*/10%,success,error",
             integration=EmailIntegration(to="me@example.com")
         )
-    ]
+    ])
     ```
 
 === "Shell"
