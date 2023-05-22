@@ -142,7 +142,7 @@ Here we update the task `status` and `value`. By default, a task's value can ran
 
     ```python
     from taskbadger import StatusEnum
-    task.update(status=StatusEnum.processing, value=5)
+    task.update(status=StatusEnum.PROCESSING, value=5)
     ```
 
 === "Shell"
@@ -189,7 +189,7 @@ The value may also be updated to 100.
 === "Python"
   
     ```python
-    task.update(status=StatusEnum.success, value=100)
+    task.update(status=StatusEnum.SUCCESS, value=100)
     ```
 
 === "Shell"
