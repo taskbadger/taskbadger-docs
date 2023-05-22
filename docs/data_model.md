@@ -1,7 +1,7 @@
 ---
 title: Data Model
 ---
-# Task Badgers' Data Model
+# Task Badger's Data Model
 
 !!!tip
 
