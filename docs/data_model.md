@@ -211,6 +211,13 @@ Here is an example of an action:
 }
 ```
 
+### Action Trigger Examples
+
+| Trigger               | Trigger Fire Points                                                          |
+|-----------------------|------------------------------------------------------------------------------|
+| `*/30%`               | When `value_percent` passes any multiple of 30%: 0%, 30%, 60%, 90%           |
+| `success,error,stale` | When the state changes to any of the listed states                           |
+| `95%,250,error`       | At 95%, when the value reaches or passes 250, when the state becomes `error` | 
 
 ### Action Edge cases
 
@@ -220,3 +227,7 @@ executed.
 For example, an action configured with `20,40,80` whose value goes from `0` directly to `90` will
 skip over the `20` and `40` events and only fire the `80` event. This also applies to task
 status triggers.
+
+This also applies to multiple trigger points that are reached simultaneously, for example, let's say
+an action has the following trigger: `100,success`. It is quite likely that the task could reach
+both those states at the same time but the action will only fire once.
