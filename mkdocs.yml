@@ -40,6 +40,8 @@ extra:
 nav:
   - 'index.md'
   - 'basics.md'
+  - 'cli.md'
+  - 'monitors.md'
   - 'data_model.md'
   - 'api.md'
   - 'integrations.md'
