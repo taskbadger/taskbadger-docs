@@ -146,3 +146,7 @@ The value may also be updated to 100.
       -d '{"status": "success", "value": 100}'
     ```
 Also check your email to see if you got the notification.
+
+!!! tip "Up Next"
+
+    Take a look at how to apply this to a real [example](web_example.md).

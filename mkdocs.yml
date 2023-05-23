@@ -10,6 +10,7 @@ theme:
   features:
     - navigation.tracking
     - content.code.annotate
+    - content.code.copy
     - content.tabs.link
 markdown_extensions:
   - admonition
