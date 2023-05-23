@@ -5,7 +5,8 @@ title: Data Model
 
 !!!tip
 
-        Download the OpenAPI schema from [https://taskbadger.net/api/schema.json](https://taskbadger.net/api/schema.json){:target="_blank"}
+        You can view and download the OpenAPI schema from
+        [https://taskbadger.net/api/docs/](https://taskbadger.net/api/docs/){:target="_blank"}
 
 ## Task
 
@@ -175,7 +176,10 @@ modified again (with the potential exception of 'stale').
 <a id="state-stale"></a>`stale`
 
 :   The task has become stale. This will happen if the task has not reached one of the other terminal
-    states AND the duration since it's last update exceeds the tasks 'stale_timeout' value.
+    states AND the duration since it's last update exceeds the tasks `stale_timeout` value (minutes). The
+    transition to this state is managed by Task Badger automatically.
+
+    Tasks can also become stale if they exceed their maximum runtime as set by `max_runtime` (minutes).
 
 
 ## Task Actions
