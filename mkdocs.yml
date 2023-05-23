@@ -12,6 +12,7 @@ theme:
     - content.code.annotate
     - content.code.copy
     - content.tabs.link
+    - search.highlight
 markdown_extensions:
   - admonition
   - tables
@@ -62,3 +63,5 @@ plugins:
           separate_signature: True
           members_order: source
           heading_level: 3
+- search:
+    separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
