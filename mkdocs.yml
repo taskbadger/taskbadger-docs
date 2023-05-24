@@ -65,3 +65,5 @@ plugins:
           heading_level: 3
 - search:
     separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+watch:
+- !ENV [TB_PYTHON_SRC, '../taskbadger-python']
