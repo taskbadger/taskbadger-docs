@@ -75,3 +75,13 @@ access to the API:
 
 ::: taskbadger.update_task
 
+## Safe functions
+
+For instances where you prefer not to handle errors you can use the following function which will handle
+all errors and log them to the `taskbadger` logger.
+
+These can also be used safely in instances where the API has not been configured via `taskbadger.init`.
+
+::: taskbadger.create_task_safe
+
+::: taskbadger.update_task_safe
