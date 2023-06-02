@@ -49,7 +49,7 @@ The config parameter is a comma-separated list of key value pairs.
 Here is an example:
 
 ```bash
-$ taskbadger run "demo task" --action "error email to:me@test.com" -- path/to/script.sh
+$ taskbadger run "demo task" --action error email to:me@test.com -- path/to/script.sh
 ```
 
 If the task state becomes `stale` or `error`, use the `email` integration to
