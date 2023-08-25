@@ -64,21 +64,6 @@ task = Task.get(task_id)
 The task object provides methods for updating the properties of a task, adding custom data
 and adding actions.
 
-### Function Decorator
-
-The SDK also provides a function decorator which can be used to automatically create a task
-when a function is called.
-
-```python
-from taskbadger import track
-
-@track("my task")
-def my_function():
-    pass
-```
-
-See the [function decorator](#taskbadger.track) documentation for more details.
-
 ### Connection management
 
 The SDK will open a new connection for each request and close it when the request is complete. For instances
@@ -93,7 +78,6 @@ with Session() as session:
 ```
 
 The CLI and the function decorator both use a session internally.
-
 
 ## Python Reference
 
