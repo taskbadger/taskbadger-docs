@@ -45,9 +45,16 @@ updated when the task completes.
 ## Task Customization
 
 You can pass additional parameters to the Task Badger class which will be used when creating the task. This can be
-done by passing keyword arguments prefixed with `taskbadger_` to the `.appy_async()` function.
+done by passing keyword arguments prefixed with `taskbadger_` to the `.appy_async()` function or to the task
+decorator.
 
 ```python
+# using the task decorator
+
+@app.task(base=Task, taskbadger_monitor_id="xyz")
+def my_task(arg1, arg2):
+    ...
+
 # using individual keyword arguments
 my_task.apply_async(
     arg1, arg2,
@@ -64,10 +71,11 @@ my_task.apply_async(arg1, arg2, taskbadger_kwargs={
 })
 ```
 
-!!!note ""
+!!!note "Order of Precedence"
+    Values passed via `apply_async` take precedence over values passed in the task decorator.
 
-    If individual keyword arguments are used as well as the `taskbadger_kwargs` dictionary, the individual arguments
-    will take precedence.
+    In both the decorator and `apply_async`, if individual keyword arguments are used as well as
+    the `taskbadger_kwargs` dictionary, the individual arguments will take precedence.
 
 ## Accessing the Task Object
 
