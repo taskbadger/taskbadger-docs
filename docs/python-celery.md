@@ -107,5 +107,6 @@ def my_task(self, items):
 !!!note
 
     The `taskbadger_task` property will be `None` if the task is not being tracked by Task Badger.
-    This could indicate that the Task Badger API has not been [configured](/python#configure) or that there was an error
-    creating the task.
+    This could indicate that the Task Badger API has not been [configured](/python#configure), there was an error
+    creating the task, or the task is being run synchronously e.g. via `.apply()` or calling the task
+    using `.map` or `.starmap`, `.chunk`.
