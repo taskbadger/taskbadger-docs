@@ -33,7 +33,19 @@ will be `success` if the command has a zero exit code. Any other exit code
 will result in an `error` status and the exit code will be saved in the
 task data under the `return_code` key.
 
-### Actions
+## Basic commands
+
+The CLI has a number of basic commands that allow you to interact with the Task Badger
+API. The commands are:
+
+* `list` - List tasks
+* `get` - Get a task
+* `create` - Create a task
+* `update` - Update a task
+
+For more details on these commands run `taskbadger <command> --help`.
+
+## Actions
 
 You can create actions for CLI tasks using the `--action` (`-a`) argument. The
 format for this argument is string with three components, separated by a space:
