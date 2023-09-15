@@ -15,7 +15,8 @@ Using the decorator will create a task with the name provided and automatically 
 status to `success` when the function completes or `error` if an exception is raised.
 
 The decorator also applies the `taskbadger.Session` context manager to the function.
-See [connection management](/python/#connection-management).
+See [connection management](python.md#connection-management).
+
 ## API Docs
 
 ::: taskbadger.track

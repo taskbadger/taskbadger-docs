@@ -11,10 +11,18 @@ without the need to write any code.
 
 The CLI is bundled with the Python client library. To install it you need:
 
-* Python > X
+* Python > 3.7
+
+The recommended approach is to install the CLI into a virtual environment using [pipx](https://pypa.github.io/pipx/):
 
 ```shell
-$ python -m pip install -U taskbadger
+$ pipx install taskbadger
+```
+
+Alternatively you can install it into your user environment using pip:
+
+```shell
+$ python3 -m pip install --user taskbadger
 ```
 
 ## Monitoring processes

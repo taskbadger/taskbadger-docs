@@ -1,16 +1,15 @@
 # Celery Integration
 
 The Celery integration provides a task class that can be used to automatically create and update tasks in Task Badger
-from Celery tasks.
+from Celery tasks. Although you can use the basic SDK functions to create and update tasks from Celery tasks, the
+Celery integration simplifies the usage significantly.
 
-The core API can be used to create and update tasks from any Celery task but the integration simplifies the usage.
-
-At the core of the integration is the `taskbadger.Task` class which is a custom Celery task tells Task Badger that
-the task should be tracked. The task class also provides convenient access to the Task Badger task object within the
-body of the Celery task.
+At the core of the integration is the `taskbadger.celery.Task` class which is a custom Celery task class which
+tells Task Badger that the task should be tracked. The task class also provides convenient access to the
+Task Badger task object within the body of the Celery task.
 
 ## Basic Usage
-To use the integration simply set the `base` parameter of your Celery task to `taskbadger.Task`:
+To use the integration simply set the `base` parameter of your Celery task to `taskbadger.celery.Task`:
 
 !!!note inline end ""
 
@@ -29,8 +28,8 @@ def my_task():
 my_task.delay()
 ```
 
-Having made this change, the task will now be automatically created in Task Badger when the task is called and
-updated when the task completes.
+Having made this change, a task will now be automatically created in Task Badger when the celery task is published.
+The Task Badger task will also be updated when the task completes.
 
 !!! info
 
@@ -44,9 +43,9 @@ updated when the task completes.
 
 ## Task Customization
 
-You can pass additional parameters to the Task Badger class which will be used when creating the task. This can be
-done by passing keyword arguments prefixed with `taskbadger_` to the `.appy_async()` function or to the task
-decorator.
+You can pass additional parameters to the Task Badger `Task` class which will be used when creating the task. 
+This can be done by passing keyword arguments prefixed with `taskbadger_` to the `.appy_async()` function or
+to the task decorator.
 
 ```python
 # using the task decorator
@@ -79,8 +78,8 @@ my_task.apply_async(arg1, arg2, taskbadger_kwargs={
 
 ## Accessing the Task Object
 
-The `taskbadger.Task` class provides access to the Task Badger task object via the `taskbadger_task` property of the
-Celery task. The Celery task instance can be accessed within a task function body by creating a
+The `taskbadger.celery.Task` class provides access to the Task Badger task object via the `taskbadger_task` property
+of the Celery task. The Celery task instance can be accessed within a task function body by creating a
 [bound task][bound_task]{:target="_blank"}.
 
 [bound_task]: https://docs.celeryq.dev/en/stable/userguide/tasks.html#bound-tasks
@@ -100,7 +99,7 @@ def my_task(self, items):
     
     # Mark the task as complete
     # This is normally handled automatically when the task completes but we call it here so that we
-    # can also update the `value` property.
+    # can also update the `value` property or other task properties.
     task.success(value=len(items))
 ```
 

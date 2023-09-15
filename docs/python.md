@@ -77,15 +77,12 @@ with Session() as session:
     task.update(status="success")
 ```
 
-The CLI and the function decorator both use a session internally.
+If you are using the [function decorator](python-decorator.md) or the [Celery integration](python-celery.md), 
+session management is handled automatically within the body of the function or Celery task.
 
 ## Python Reference
 
 ::: taskbadger.Task
-
-## Function decorator
-
-::: taskbadger.track
 
 ## Low level functions
 In addition to the `taskbadger.Task` class. There are also a number of functions that provide lower level
