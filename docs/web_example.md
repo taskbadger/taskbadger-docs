@@ -23,7 +23,7 @@ def export_data(request):
         "data export",
         data={"user_id": request.user.id},
         actions=[Action("error,stale", integration=EmailIntegration(to=NOTIFY_EMAIL))],
-        stale_timeout=5,  # minutes
+        stale_timeout=60,  # seconds
     )
 
     export_user_data.delay(task_id=task.id, user_id=request.user.id)
