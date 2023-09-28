@@ -202,6 +202,6 @@ The value may also be updated to 100.
     ```
 Also check your email to see if you got the notification.
 
-!!! tip "Up Next"
+## A real example
 
-    Take a look at how to apply this to a real [example](web_example.md).
+Take a look at how to apply this to a real [example](web_example.md).
