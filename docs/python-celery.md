@@ -25,7 +25,9 @@ app = Celery("tasks")
 def my_task():
     pass
 
-my_task.delay()
+result = my_task.delay()
+taskbadger_task_id = result.taskbadger_task_id
+taskbadger_task = result.get_taskbadger_task()
 ```
 
 Having made this change, a task will now be automatically created in Task Badger when the celery task is published.
@@ -36,6 +38,9 @@ The Task Badger task will also be updated when the task completes.
     Note that Task Badger will only track the Celery task if it is run asynchronously. If the task is run
     synchronously via `.apply()`, by calling the function directly, or if [`task_always_eager`][always_eager]{:target="_blank"} has been set,
     the task will not be tracked.
+
+    This also means that the `taskbadger_task_id` attribute of the result as well as the return value
+    of `result.get_taskbadger_task()` will be `None` if the task is not being tracked by Task Badger.
 
 
 [always_eager]: https://docs.celeryq.dev/en/stable/userguide/configuration.html#std-setting-task_always_eager
@@ -106,6 +111,6 @@ def my_task(self, items):
 !!!note
 
     The `taskbadger_task` property will be `None` if the task is not being tracked by Task Badger.
-    This could indicate that the Task Badger API has not been [configured](/python#configure), there was an error
+    This could indicate that the Task Badger API has not been [configured](python.md#configure), there was an error
     creating the task, or the task is being run synchronously e.g. via `.apply()` or calling the task
     using `.map` or `.starmap`, `.chunk`.
