@@ -7,6 +7,12 @@ and then updated it as the task is processed on the backend.
 
 In the following example we'll be using Django and Celery.
 
+!!! tip
+
+    If using the Task Badger task for local progress tracking seems a bit heavy for your use case, you could
+    use [celery-progress](https://pypi.org/project/celery-progress/){:target="_blank"} for local tracking and
+    maintain the Task Badger task purerly for remote tracking, metrics, alerts, integrations etc.
+
 ## Option 1: Use the Core API
 
 ### 1. Create the task in a view
@@ -107,7 +113,7 @@ from apps.export.tasks import export_user_data
 @require_POST
 def export_data(request):
     task = export_user_data.delay(user_id=request.user.id, taskbadger_data={"user_id": request.user.id})
-    tb_task_id = task.result.get("taskbadger_task_id")
+    tb_task_id = task.info.get("taskbadger_task_id")
     return JsonResponse({"task_id": tb_task_id})
 
 
