@@ -51,11 +51,11 @@ The main attributes or a task are:
 
 `max_runtime`
 
-:   This value represents the number of minutes a task can run for before being placed in the 'error' state.
+:   This value represents the number of seconds a task can run for before being placed in the 'error' state.
 
 `stale_timeout`
 
-:    This represents the maximum number of minutes allowed between task updates. If a task does not receive
+:    This represents the maximum number of seconds allowed between task updates. If a task does not receive
      updates within this period it will be marked as 'stale'.
 
 ### Example Task
@@ -176,10 +176,10 @@ modified again (with the potential exception of 'stale').
 <a id="state-stale"></a>`stale`
 
 :   The task has become stale. This will happen if the task has not reached one of the other terminal
-    states AND the duration since it's last update exceeds the tasks `stale_timeout` value (minutes). The
+    states AND the duration since it's last update exceeds the tasks `stale_timeout` value (seconds). The
     transition to this state is managed by Task Badger automatically.
 
-    Tasks can also become stale if they exceed their maximum runtime as set by `max_runtime` (minutes).
+    Tasks can also become stale if they exceed their maximum runtime as set by `max_runtime` (seconds).
 
 
 ## Task Actions
