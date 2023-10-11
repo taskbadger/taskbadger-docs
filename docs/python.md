@@ -26,6 +26,9 @@ taskbadger.init(
 
 Details about these configuration parameters can be found [here](basics.md#organization-and-project)
 
+If you attempt to use the SDK without configuring it you will get an error. To avoid this you can use the
+[safe functions](#safe-functions) which will log any errors to the `taskbadger` logger.
+
 ## Usage
 
 The SDK provides a [Task](#taskbadger.Task) class which offers a convenient interface to the API.
@@ -60,6 +63,19 @@ task = Task.get(task_id)
 
 The task object provides methods for updating the properties of a task, adding custom data
 and adding actions.
+
+### Connection management
+
+The SDK will open a new connection for each request and close it when the request is complete. For instances
+where you wish to make multiple requests you can use the `taskbadger.Session` context manager:
+
+```python
+from taskbadger import Session
+
+with Session() as session:
+    task = Task.create("my task")
+    task.update(status="success")
+```
 
 ## Python Reference
 
