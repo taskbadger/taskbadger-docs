@@ -93,7 +93,7 @@ data.
 === "Python"
 
     ```python
-    > task = Task.create("task name", stale_timeout=1)
+    > task = Task.create("task name", stale_timeout=10)
     > task.id
     "128aoa98e0fiq238"
     ```
@@ -104,7 +104,7 @@ data.
     $ curl -X POST "https://taskbadger.net/api/${ORG}/${PROJECT}/tasks/" \
       -H "Authorization: Bearer ${API_KEY}" \
       -H "Content-Type: application/json" \
-      -d '{"name": "demo task", "stale_timeout": 1}'
+      -d '{"name": "demo task", "stale_timeout": 10}'
     ```
 
     The response will include the task ID which is needed for updating the task.
@@ -121,7 +121,7 @@ data.
       "value_percent": null,
       "data": null,
       "max_runtime": null,
-      "stale_timeout": 1,
+      "stale_timeout": 10,
       "start_time": null,
       "end_time": null,
       "created": "2022-09-22T06:53:40.683555Z",

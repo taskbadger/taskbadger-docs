@@ -51,11 +51,12 @@ The main attributes or a task are:
 
 `max_runtime`
 
-:   This value represents the number of minutes a task can run for before being placed in the 'error' state.
+:   This value can be used in conjunction with task actions and monitors to trigger actions if a task
+    exceeds its expected runtime. The value is in seconds.
 
 `stale_timeout`
 
-:    This represents the maximum number of minutes allowed between task updates. If a task does not receive
+:    This represents the maximum number of seconds allowed between task updates. If a task does not receive
      updates within this period it will be marked as 'stale'.
 
 ### Example Task
@@ -173,13 +174,15 @@ modified again (with the potential exception of 'stale').
 
 :   The task has been cancelled. A task may take on this state at any point.
 
+
+#### Other states
+
 <a id="state-stale"></a>`stale`
 
-:   The task has become stale. This will happen if the task has not reached one of the other terminal
-    states AND the duration since it's last update exceeds the tasks `stale_timeout` value (minutes). The
-    transition to this state is managed by Task Badger automatically.
-
-    Tasks can also become stale if they exceed their maximum runtime as set by `max_runtime` (minutes).
+:   The task has become stale. This will happen if the task has not reached one of the terminal
+    states AND the duration since it's last update exceeds the tasks `stale_timeout` value (seconds). The
+    transition to this state is managed by Task Badger automatically. A task in this state may transition
+    to any other state via an update.
 
 
 ## Task Actions
@@ -211,7 +214,19 @@ Here is an example of an action:
 }
 ```
 
-### Action Trigger Examples
+### Action Triggers
+
+An action trigger is a comma-separated list of trigger points. Each trigger point is one of the following:
+
+* A numeric value which is matched against the task `value`.
+* A percentage value which is matched against the task `value_percent`.
+* A task status which is matched against the task `status`.
+* A special value `max_runtime_exeeded` which is matched when the task exceeds its `max_runtime` value.
+
+Numeric and percentage trigger points can also be prefixed with `*/` to indicate that the trigger should
+fire at regular intervals. For example, `*/50%` will fire at 0%, 50% and 100%.
+
+Examples:
 
 | Trigger               | Trigger Fire Points                                                          |
 |-----------------------|------------------------------------------------------------------------------|

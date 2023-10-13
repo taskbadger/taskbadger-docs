@@ -1,4 +1,5 @@
 site_name: Task Badger Documentation
+site_url: https://docs.taskbadger.net
 theme:
   name: material
   logo: assets/logo_white.png
