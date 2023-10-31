@@ -77,6 +77,9 @@ with Session() as session:
     task.update(status="success")
 ```
 
+If you are using the [function decorator](python-decorator.md) or the [Celery integration](python-celery.md), 
+session management is handled automatically within the body of the function or Celery task.
+
 ## Python Reference
 
 ::: taskbadger.Task

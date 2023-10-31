@@ -55,7 +55,10 @@ nav:
   - 'data_model.md'
   - 'api.md'
   - 'integrations.md'
-  - 'Python SDK': 'python.md'
+  - 'Python SDK':
+    - 'Basic Usage': 'python.md'
+    - 'Function Decorator': 'python-decorator.md'
+    - 'Celery Integration': 'python-celery.md'
 
 plugins:
 - mkdocstrings:
