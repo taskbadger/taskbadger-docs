@@ -80,6 +80,42 @@ with Session() as session:
 If you are using the [function decorator](python-decorator.md) or the [Celery integration](python-celery.md), 
 session management is handled automatically within the body of the function or Celery task.
 
+### Scope
+
+The SDK provides the `taskbadger.current_scope` context manager which can be used to set custom data
+for the duration of the context. The content of the scope will be merged with any custom task data
+passed directly to any of the other API methods.
+
+```python
+import socket
+import taskbadger
+
+with taskbadger.current_scope() as scope:
+    scope["hostname"] = socket.gethostname()
+```
+
+A common use case for this is to add request scoped context in frameworks like Django or Flask using a custom
+middleware. Here's an example for Django:
+
+```python
+import taskbadger
+
+def taskbadger_scope_middleware(get_response):
+    def middleware(request):
+        with taskbadger.current_scope() as scope:
+            scope["user"] = request.user.username
+            return get_response(request)
+
+    return middleware
+```
+
+!!!note
+
+    The data passed directly to the API will take precedence over the data in the current scope. If the same
+    key is present in the current scope as well as the data passed in directly, the value in the data passed
+    directly will be used.
+
+
 ## Python Reference
 
 ::: taskbadger.Task
