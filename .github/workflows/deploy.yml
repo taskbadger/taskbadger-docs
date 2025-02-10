@@ -11,17 +11,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: docs
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: taskbadger/taskbadger-python
           path: taskbadger-python
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
-      - run: pip install -r docs/requirements.txt
+          python-version: 3.12
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: Install project
+        run: uv sync --frozen
       - run: |
           cd docs
-          mkdocs gh-deploy --force
+          uv run mkdocs gh-deploy --force
