@@ -25,7 +25,9 @@ jobs:
         with:
           enable-cache: true
       - name: Install project
-        run: uv sync --frozen
+        run: |
+          cd docs
+          uv sync --frozen
       - run: |
           cd docs
           uv run mkdocs gh-deploy --force
