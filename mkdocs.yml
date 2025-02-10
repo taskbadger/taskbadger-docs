@@ -21,6 +21,9 @@ markdown_extensions:
   - tables
   - def_list
   - attr_list
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite

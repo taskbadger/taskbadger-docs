@@ -29,20 +29,18 @@ taskbadger.init(
 )
 ```
 
-To track only certain tasks, you can use the `includes` and `excludes` parameters which take a list of task names
-or patterns:
+### System Integration Options
 
-```python
-CelerySystemIntegration(
-    includes=[
-        "myapp.tasks.*",
-        "myapp.other_tasks.special_task"
-    ],
-    excludes=[
-        "myapp.tasks.heartbeat",
-    ]
-)
-```
+The `CelerySystemIntegration` class takes a number of optional parameters:
+
+- `auto_track_tasks`: Set this to `False` to disable automatic tracking of tasks.
+- `includes`: A list of task names or patterns to include. If this is set, only tasks that match one of the patterns
+  will be tracked.
+- `excludes`: A list of task names or patterns to exclude. If this is set, tasks that match one of the patterns will
+  not be tracked.
+- `record_task_args`: If `True`, the arguments passed to the task will be recorded in the Task Badger task data.
+  
+    ==Since v1.4.0==
 
 Exclusions take precedence over inclusions so if a task name matches both an include and an exclude, it will be
 excluded.
@@ -134,6 +132,16 @@ my_task.apply_async(arg1, arg2, taskbadger_kwargs={
 
     In both the decorator and `apply_async`, if individual keyword arguments are used as well as
     the `taskbadger_kwargs` dictionary, the individual arguments will take precedence.
+
+
+!!!note "Recording task args"
+
+    By default, the arguments passed to the task are not recorded in the Task Badger task data. To record the
+    arguments, set the `taskbadger_record_task_args` parameter to `True` in the task decorator or in the `apply_async` call.
+    This will override the value set in the `CelerySystemIntegration` if it is being used.
+
+    ==Since v1.4.0==
+
 
 ### Accessing the Task Object
 
