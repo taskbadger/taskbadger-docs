@@ -98,6 +98,7 @@ plugins:
           separate_signature: True
           members_order: source
           heading_level: 3
+          line_length: 80
 - search:
     separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
 watch:

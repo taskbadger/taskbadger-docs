@@ -59,6 +59,12 @@ The main attributes or a task are:
 :    This represents the maximum number of seconds allowed between task updates. If a task does not receive
      updates within this period it will be marked as 'stale'.
 
+<a name="tags"></a>
+`tags`
+
+:   A list of tags that can be used to categorize tasks. Tags are useful for filtering tasks in the UI. Each tag
+    has a name and a value. For example, a task may have a tag `environment:production`.
+
 ### Example Task
 
 ```json
@@ -81,7 +87,10 @@ The main attributes or a task are:
   "created": "2022-08-24T14:15:22Z",
   "updated": "2022-08-24T16:15:22Z",
   "url": "https://taskbadger.net/a/{example_org/tasks/57ae8eVBrH7jbDgmYj6Ut2vR9S/",
-  "public_url": "https://taskbadger.net/public/tasks/57ae8eVBrH7jbDgmYj6Ut2vR9S/"
+  "public_url": "https://taskbadger.net/public/tasks/57ae8eVBrH7jbDgmYj6Ut2vR9S/",
+  "tags": [
+    {"environment": "production"}
+  ]
 }
 ```
 

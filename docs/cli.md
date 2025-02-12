@@ -134,3 +134,13 @@ API Key: XYZ.ABC
 
 Config written to ~/.config/taskbadger/config
 ```
+
+#### Tags
+
+[Tags](data_model.md#tags) can also be added to the configuration file:
+
+```toml
+[tags]
+environment = "production"
+host = "server-1"
+```
