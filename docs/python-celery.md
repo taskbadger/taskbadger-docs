@@ -25,7 +25,8 @@ taskbadger.init(
     organization_slug="my-org",
     project_slug="my-project",
     token="***",
-    systems=[CelerySystemIntegration()]
+    systems=[CelerySystemIntegration()],
+    tags={"environment": "production"}
 )
 ```
 

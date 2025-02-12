@@ -17,6 +17,32 @@ In order to use the API you will need the following details:
     * Create one on your Profile page
 
 
+## Montior Celery Tasks
+
+When using the [Celery integration](python-celery.md) you can use the `CelerySystemIntegration` class to automatically record tasks.
+
+```python
+from celery import Celery
+import taskbadger
+from taskbadger.systems.celery import CelerySystemIntegration
+
+app = Celery('hello', broker='amqp://guest@localhost//')
+
+taskbadger.init(
+    organization_slug="my-org",
+    project_slug="my-project",
+    token="***",
+    tags={"environment": "production"},
+    systems=[CelerySystemIntegration(record_task_args=True)]
+)
+
+@app.task
+def hello(who):
+    return f'hello {who}'
+```
+
+This is all the configuration that is needed to do basic task tracking with Celery.
+
 ## Monitor a task from the command line
 
 The Task Badger CLI allows you to run commands from the shell and have them monitored
@@ -41,6 +67,7 @@ Config written to ~/.config/taskbadger/confi
 ```shell
 $ taskbadger run "demo task" \
   --action "error email to:me@test.com" \
+  --tag "environment=staging" \
   -- path/to/script.sh
 
 Task created: https://taskbadger.net/public/tasks/xyz/
@@ -52,8 +79,6 @@ and an email will be sent to `me@test.com`.
 See more about the [CLI](cli.md).
 
 ## Use the API directly
-
-
 
 === "Python"
 
@@ -71,7 +96,8 @@ See more about the [CLI](cli.md).
     taskbadger.init(
         organization_slug="my-org",
         project_slug="my-project",
-        token="***"
+        token="***",
+        tags={"environment": "production"},
     )
     ```
 
@@ -93,7 +119,7 @@ data.
 === "Python"
 
     ```python
-    > task = Task.create("task name", stale_timeout=10)
+    > task = Task.create("task name", stale_timeout=10, tags={"environment": "staging"})
     > task.id
     "128aoa98e0fiq238"
     ```
@@ -104,7 +130,7 @@ data.
     $ curl -X POST "https://taskbadger.net/api/${ORG}/${PROJECT}/tasks/" \
       -H "Authorization: Bearer ${API_KEY}" \
       -H "Content-Type: application/json" \
-      -d '{"name": "demo task", "stale_timeout": 10}'
+      -d '{"name": "demo task", "stale_timeout": 10, "tags": {"environment": "staging"}}'
     ```
 
     The response will include the task ID which is needed for updating the task.
@@ -127,7 +153,8 @@ data.
       "created": "2022-09-22T06:53:40.683555Z",
       "updated": "2022-09-22T06:53:40.683555Z"
       "url": "https://taskbadger.net/a/{example_org/tasks/{task_id}/",
-      "public_url": "https://taskbadger.net/public/tasks/{task_id}/"
+      "public_url": "https://taskbadger.net/public/tasks/{task_id}/",
+      "tags": {"environment": "staging"}
     }
     ```
 
