@@ -8,4 +8,5 @@ dependencies = [
     "invoke",
     "mkdocs-material",
     "mkdocstrings[python]",
+    "ruff>=0.9.6",
 ]
