@@ -20,7 +20,8 @@ import taskbadger
 taskbadger.init(
     organization_slug="my-org",
     project_slug="my-project",
-    token="***"
+    token="***",
+    tags={"environment": "production"},
 )
 ```
 
@@ -28,6 +29,9 @@ Details about these configuration parameters can be found [here](basics.md#organ
 
 If you attempt to use the SDK without configuring it you will get an error. To avoid this you can use the
 [safe functions](#safe-functions) which will log any errors to the `taskbadger` logger.
+
+!!! tip
+    [Tags](data_model.md#tags) provided here will be applied to all tasks created using the SDK. If you need to add tags to individual tasks you can do so using the create and update methods or the `task.add_tag` method. Tags added manually will override the global tags.
 
 ## Usage
 
@@ -49,7 +53,8 @@ task = Task.create(
             trigger="*/10%,success,error",
             integration=EmailIntegration(to="me@example.com")
         )
-    ]
+    ],
+    tags={"tenant": "acme"}
 )
 ```
 
@@ -82,9 +87,7 @@ session management is handled automatically within the body of the function or C
 
 ### Scope
 
-The SDK provides the `taskbadger.current_scope` context manager which can be used to set custom data
-for the duration of the context. The content of the scope will be merged with any custom task data
-passed directly to any of the other API methods.
+The SDK provides the `taskbadger.current_scope` context manager which can be used to set custom data and modify tags for the duration of the context. The content of the scope will be merged with any custom task data passed directly to any of the other API methods.
 
 ```python
 import socket
@@ -92,6 +95,7 @@ import taskbadger
 
 with taskbadger.current_scope() as scope:
     scope["hostname"] = socket.gethostname()
+    scope.tag({"tenant": "acme"})
 ```
 
 A common use case for this is to add request scoped context in frameworks like Django or Flask using a custom
@@ -104,6 +108,7 @@ def taskbadger_scope_middleware(get_response):
     def middleware(request):
         with taskbadger.current_scope() as scope:
             scope["user"] = request.user.username
+            scope.tag({"tenant": request.tenant.slug})
             return get_response(request)
 
     return middleware
@@ -113,7 +118,7 @@ def taskbadger_scope_middleware(get_response):
 
     The data passed directly to the API will take precedence over the data in the current scope. If the same
     key is present in the current scope as well as the data passed in directly, the value in the data passed
-    directly will be used.
+    directly will be used. The same applies to tags.
 
 
 ## Python Reference
