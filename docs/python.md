@@ -144,6 +144,8 @@ def before_create(task_data: dict) -> dict:
     return task_data
 ```
 
+==Since v1.5.0==
+
 ## Python Reference
 
 ::: taskbadger.Task
