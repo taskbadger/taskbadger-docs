@@ -25,7 +25,16 @@ taskbadger.init(
 )
 ```
 
-Details about these configuration parameters can be found [here](basics.md#organization-and-project)
+Details about the slug configuration parameters can be found [here](basics.md#organization-and-project).
+
+| Name              | Description                                                                                               |
+|-------------------|-----------------------------------------------------------------------------------------------------------|
+| organization_slug | The organization identifier.                                                                              |
+| project_slug      | The project identifier.                                                                                   |
+| token             | API authentication token.                                                                                 |
+| tags              | Global tags which are added to all tasks.                                                                 |
+| systems           | System integrations such as [Celery](python-celery.md)                                                    |
+| before_create     | A function that is called before a task is created. See [Before Create Callback](#before-create-callback) |
 
 If you attempt to use the SDK without configuring it you will get an error. To avoid this you can use the
 [safe functions](#safe-functions) which will log any errors to the `taskbadger` logger.
@@ -120,6 +129,20 @@ def taskbadger_scope_middleware(get_response):
     key is present in the current scope as well as the data passed in directly, the value in the data passed
     directly will be used. The same applies to tags.
 
+## Before Create Callback
+
+The `before_create` parameter in the `taskbadger.init` function allows you to define a function that will be called before a task is created. This function will be passed the task data as a dictionary and should return the modified task data.
+
+```python
+def before_create(task_data: dict) -> dict:
+    data = task_data.setdefault("data", {})
+    data["custom"] = "data"
+    
+    tags = task_data.setdefault("tags", {})
+    tags["tenant"] = "acme"
+    
+    return task_data
+```
 
 ## Python Reference
 

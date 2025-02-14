@@ -84,6 +84,8 @@ nav:
     - 'Basic Usage': 'python.md'
     - 'Function Decorator': 'python-decorator.md'
     - 'Celery Integration': 'python-celery.md'
+  - 'Changelog':
+    - 'changelog.md'
 
 plugins:
 - mkdocstrings:
