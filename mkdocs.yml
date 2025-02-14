@@ -13,8 +13,8 @@ theme:
     - navigation.instant
     - navigation.prune
     - navigation.sections
-#    - navigation.tabs
-#    - navigation.tabs.sticky
+    - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.tracking
     - navigation.top
     - search.highlight
@@ -71,13 +71,15 @@ extra:
       link: https://github.com/taskbadger
 copyright: Copyright &copy; 2020 - 2025 Simon Kelly
 nav:
-  - 'index.md'
-  - 'basics.md'
-  - 'cli.md'
-  - 'monitors.md'
-  - 'data_model.md'
-  - 'api.md'
-  - 'integrations.md'
+  - Docs:
+    - 'index.md'
+    - 'quick.md'
+    - 'basics.md'
+    - 'cli.md'
+    - 'monitors.md'
+    - 'data_model.md'
+    - 'api.md'
+    - 'integrations.md'
   - 'Python SDK':
     - 'Basic Usage': 'python.md'
     - 'Function Decorator': 'python-decorator.md'
