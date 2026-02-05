@@ -177,3 +177,53 @@ def my_task(self, items):
     This could indicate that the Task Badger API has not been [configured](python.md#configure), there was an error
     creating the task, or the task is being run synchronously e.g. via `.apply()` or calling the task
     using `.map` or `.starmap`, `.chunk`.
+
+## Canvas primitives (map / starmap / chunks)
+
+As of `v1.6.3`, Task Badger now tracks tasks created via Celery canvas primitives: `map`, `starmap`, and `chunks`. Previously these were executed as built-in `celery.map` / `celery.starmap` tasks and were filtered out; TaskBadger now creates task records for the *inner* tasks produced by these primitives.
+
+Behavior summary:
+
+- Canvas primitives produce Task Badger tasks using the inner task's name (so the tracked task has the same name as if the task had been executed individually).
+- Each created task includes additional metadata:
+  - `canvas_type`: one of `celery.map`, `celery.starmap`, or `celery.chunks`
+  - `item_count`: number of inner items produced by the canvas execution (an integer)
+  - `celery_task_items`: the arguments passed to the inner task
+
+**Example**
+
+Assume a Celery task:
+
+```python
+@app.task(name="myapp.add")
+def add(x, y):
+    return x + y
+```
+
+Running a map:
+
+```python
+# This schedules 3 inner tasks
+add.map([(1, 2), (2, 3), (3, 4)]).apply_async()
+```
+
+Task Badger will create task records for each inner invocation with metadata similar to:
+
+```json
+{
+  "name": "myapp.add",
+  "metadata": {
+    "canvas_type": "celery.map",
+    "item_count": 3,
+    "celery_task_items": [[1, 2], [2, 3], [3, 4]]
+  }
+}
+```
+
+**Opting out**
+
+If you want to prevent TaskBadger from tracking a particular execution, set the `taskbadger_track` header (False) when publishing:
+
+```python
+add.map([(1, 2), (2, 3)]).apply_async(headers={"taskbadger_track": False})
+```
