@@ -11,7 +11,7 @@ hide:
 
 **Python SDK**
 
-* **NEW** Track Celery canvas primitives (`map`, `starmap`, `chunks`) so that inner tasks are recorded in Task Badger. More info in the [Celery docs](python-celery.md#canvas-primitives-map--starmap--chunks).
+* **NEW** Track Celery canvas primitives (`map`, `starmap`, `chunks`) so that inner tasks are recorded in Task Badger. More info in the [Celery docs](python-celery.md#canvas-primitives-map-starmap-chunks).
 
 ## v1.6.2
 
