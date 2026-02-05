@@ -5,6 +5,14 @@ hide:
 
 # Changelog
 
+## v1.6.2
+
+**2025-12-04**
+
+**Python SDK**
+
+* **HOUSEKEEPING** Remove upper bound on httpx dependency
+
 ## v1.6.1
 
 **2025-03-04**
