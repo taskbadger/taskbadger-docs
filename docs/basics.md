@@ -3,21 +3,17 @@ title: Using the API
 ---
 # Using the Task Badger API
 
-## Organization and Project
-
-API endpoints include both the `organization` and `project` slug. The user authenticating
-the request must have access to both for the request to be accepted.
-
-* Organization slug
-    * You can get this by going to 'My Organization'  
-* Project slug
-    * Go to the 'Projects' page. The slug for each project is listed. 
-
 ## Authentication
 
-Requests must be authenticated by providing a bearer token provided
-in the Authentication header. You can generate a token by going to your
-[user profile page](https://taskbadger.net/users/profile/).
+API requests must be authenticated using a **Project API Key** provided in the
+`Authorization` header as a Bearer token.
+
+You can find your API key on the project settings page in the
+[Task Badger dashboard](https://taskbadger.net). A default API key is created
+automatically when you create a new organization.
+
+The API key encodes your organization and project, so you don't need to
+configure them separately.
 
 ```linenums="1" hl_lines="2"
 POST https://taskbadger.net/api/{organization}/{project}/tasks/
@@ -25,6 +21,17 @@ Authorization: Bearer xxxx
 Content-type: application/json
 {"name":"demo task","status":"pending"}
 ```
+
+## Organization and Project
+
+API endpoints include both the `organization` and `project` slug. When using
+a Project API Key with the Python SDK or CLI, these are detected automatically
+from the key.
+
+If you need to find them manually:
+
+* **Organization slug** — available on the 'My Organization' page
+* **Project slug** — listed on the 'Projects' page
 
 ## Request bodies
 

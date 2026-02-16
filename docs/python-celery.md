@@ -22,9 +22,7 @@ import taskbadger
 from taskbadger.systems import CelerySystemIntegration
 
 taskbadger.init(
-    organization_slug="my-org",
-    project_slug="my-project",
-    token="***",
+    token="YOUR_API_KEY",
     systems=[CelerySystemIntegration()],
     tags={"environment": "production"}
 )

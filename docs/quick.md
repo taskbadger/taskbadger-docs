@@ -7,14 +7,9 @@ Let's discover **Task Badger in less than 5 minutes**.
 
 ## Setup
 
-In order to use the API you will need the following details:
-
-* Organization slug
-    * You can get this by going to 'My Organization'  
-* Project slug
-    * Go to the 'Projects' page. The slug for each project is listed. 
-* API Key
-    * Create one on your Profile page
+To get started you will need a **Project API Key**. You can find this on
+the project settings page in the [Task Badger dashboard](https://taskbadger.net).
+A default key is created automatically when you create a new organization.
 
 
 ## Montior Celery Tasks
@@ -29,9 +24,7 @@ from taskbadger.systems.celery import CelerySystemIntegration
 app = Celery('hello', broker='amqp://guest@localhost//')
 
 taskbadger.init(
-    organization_slug="my-org",
-    project_slug="my-project",
-    token="***",
+    token="YOUR_API_KEY",
     tags={"environment": "production"},
     systems=[CelerySystemIntegration(record_task_args=True)]
 )
@@ -55,11 +48,10 @@ $ python3 -m pip install taskbadger
 
 $ taskbadger configure
 
-Organization slug: my-org 
-Project slug: project-x 
-API Key: XYZ.ABC
+API Key: YOUR_API_KEY
+Project key detected — organization: my-org, project: project-x
 
-Config written to ~/.config/taskbadger/confi
+Config written to ~/.config/taskbadger/config
 ```
 
 ### Use the CLI to run and monitor the command
@@ -94,21 +86,20 @@ See more about the [CLI](cli.md).
     import taskbadger
 
     taskbadger.init(
-        organization_slug="my-org",
-        project_slug="my-project",
-        token="***",
+        token="YOUR_API_KEY",
         tags={"environment": "production"},
     )
     ```
 
 === "Shell"
 
-    Export the configuration parameters:
+    Export the configuration parameters. The organization and project slugs
+    can be found on the project settings page alongside your API key.
 
     ```shell
     export ORG="my-org"
     export PROJECT="my-project"
-    export API_KEY="***"
+    export API_KEY="YOUR_API_KEY"
     ```
 
 ### Creating a task

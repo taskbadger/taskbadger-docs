@@ -88,7 +88,7 @@ Values provided via environment variables override values in the configuration f
 and values provided via the command line override both environment config and the
 configuration file.
 
-Details about the configuration parameters can be found [here](basics.md#organization-and-project)
+Details about authentication can be found [here](basics.md#authentication).
 
 ### Command line arguments
 
@@ -113,24 +113,26 @@ of the API Key.
 
 ### Environment variables
 
-Use the following environment variable names to configure the CLI:
+Use the following environment variable to configure the CLI:
 
-* `TASKBADGER_API_KEY`
+* `TASKBADGER_API_KEY` — Project API key (organization and project are detected automatically)
+
+When using a legacy API key, the following additional variables are required:
+
 * `TASKBADGER_ORG`
 * `TASKBADGER_PROJECT`
 
 ### Configuration file
 
 The CLI includes a convenience command to create the configuration file. Running the `configure`
-command will prompt you for the configuration parameters and save them to the configuration
-file.
+command will prompt you for your API key. If you provide a Project API Key, the organization
+and project are detected automatically.
 
 ```bash
 $ taskbadger configure
 
-Organization slug: my-org 
-Project slug: project-x 
-API Key: XYZ.ABC 
+API Key: YOUR_API_KEY
+Project key detected — organization: my-org, project: project-x
 
 Config written to ~/.config/taskbadger/config
 ```

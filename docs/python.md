@@ -18,23 +18,23 @@ The SDK must be configured before you can use it to interact with the APIs.
 import taskbadger
 
 taskbadger.init(
-    organization_slug="my-org",
-    project_slug="my-project",
-    token="***",
+    token="YOUR_API_KEY",
     tags={"environment": "production"},
 )
 ```
 
-Details about the slug configuration parameters can be found [here](basics.md#organization-and-project).
+When using a Project API Key, the organization and project are detected
+automatically from the key. You can find your API key on the project settings
+page in the [Task Badger dashboard](https://taskbadger.net).
 
 | Name              | Description                                                                                               |
 |-------------------|-----------------------------------------------------------------------------------------------------------|
-| organization_slug | The organization identifier.                                                                              |
-| project_slug      | The project identifier.                                                                                   |
-| token             | API authentication token.                                                                                 |
+| token             | Project API key. The organization and project are extracted from the key automatically.                    |
 | tags              | Global tags which are added to all tasks.                                                                 |
 | systems           | System integrations such as [Celery](python-celery.md)                                                    |
 | before_create     | A function that is called before a task is created. See [Before Create Callback](#before-create-callback) |
+| organization_slug | The organization identifier. Only required for legacy API keys.                                           |
+| project_slug      | The project identifier. Only required for legacy API keys.                                                |
 
 If you attempt to use the SDK without configuring it you will get an error. To avoid this you can use the
 [safe functions](#safe-functions) which will log any errors to the `taskbadger` logger.
