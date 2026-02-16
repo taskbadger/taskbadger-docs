@@ -2,8 +2,6 @@
 
 Task Badger is a monitoring and observability platform for background jobs and async tasks. It integrates with task processing systems like Celery to give you visibility into task progress, performance, and failures.
 
-![Task Badger](assets/visualization.png)
-
 ## Get Started
 
 Install the Python SDK:
