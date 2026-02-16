@@ -4,10 +4,10 @@ On this page, we get you up and running with Task Badger's Python SDK.
 
 ## Install
 
-Install the SDK using [pip](https://pip.pypa.io/en/stable/) or your favorite pacakge manager: 
+Install the SDK using [uv](https://docs.astral.sh/uv/) or your favorite package manager:
 
 ```bash
-pip install --upgrade taskbadger
+uv pip install taskbadger
 ```
 
 ## Configure

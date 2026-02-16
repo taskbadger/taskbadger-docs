@@ -44,7 +44,7 @@ by Task Badger. The task status will get updated once the command completes.
 ### Install and configure the CLI
 
 ```bash
-$ python3 -m pip install taskbadger
+$ uv pip install taskbadger
 
 $ taskbadger configure
 
@@ -77,7 +77,7 @@ See more about the [CLI](cli.md).
     Install the `taskbadger` Python library:
 
     ```shell
-    $ python3 -m pip install taskbadger
+    $ uv pip install taskbadger
     ```
 
     Configure the API client:

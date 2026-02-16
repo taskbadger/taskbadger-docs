@@ -9,7 +9,7 @@ Task Badger is a monitoring and observability platform for background jobs and a
 Install the Python SDK:
 
 ```bash
-pip install taskbadger
+uv pip install taskbadger
 ```
 
 Initialize with your [Project API Key](https://taskbadger.net):

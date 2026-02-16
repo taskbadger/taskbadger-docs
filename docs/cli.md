@@ -13,16 +13,16 @@ The CLI is bundled with the Python client library. To install it you need:
 
 * Python > 3.7
 
-The recommended approach is to install the CLI into a virtual environment using [pipx](https://pypa.github.io/pipx/):
+The recommended approach is to install the CLI as a tool using [uv](https://docs.astral.sh/uv/):
 
 ```shell
-$ pipx install taskbadger
+$ uv tool install taskbadger
 ```
 
-Alternatively you can install it into your user environment using pip:
+Alternatively you can install it into a virtual environment:
 
 ```shell
-$ python3 -m pip install --user taskbadger
+$ uv pip install taskbadger
 ```
 
 ## Monitoring processes
