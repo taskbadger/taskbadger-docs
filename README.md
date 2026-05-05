@@ -4,7 +4,7 @@ See https://docs.taskbadger.net
 
 ## Setup
 
-```python
-pip install requirements.txt
+```bash
+uv sync
 inv serve
 ```
