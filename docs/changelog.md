@@ -5,6 +5,26 @@ hide:
 
 # Changelog
 
+## v2.0.0
+
+**2026-05-05**
+
+**Python SDK**
+
+* **BREAKING** CLI dependencies (`typer`, `rich`) are now an optional extra. Install with `pip install 'taskbadger[cli]'` (or `uv tool install 'taskbadger[cli]'`) to use the `taskbadger` command. SDK-only consumers no longer pull in these packages. The `typer` pin was also bumped from `<0.10` to `>=0.12`.
+* **BREAKING** Removed the deprecated `task.update_progress` and `task.increment_progress` methods. Use `task.update_value` and `task.increment_value` instead (deprecated since v1.6.1).
+* **BREAKING** Dropped support for Python 3.9. Minimum supported version is now Python 3.10.
+
+## v1.7.0
+
+**2026-02-16**
+
+**Python SDK**
+
+* **NEW** Support for [Project API Keys](basics.md#authentication) with automatic detection of organization and project from the key itself. The `organization_slug` / `project_slug` arguments to `taskbadger.init` are no longer required when using a project key.
+* **UPDATE** Legacy API keys (which require explicit `organization_slug` and `project_slug`) now emit a `DeprecationWarning`. Migrate to Project API keys.
+* **UPDATE** The CLI `configure` command now detects Project API keys and skips the organization/project prompts.
+
 ## v1.6.3
 
 **2026-02-05**

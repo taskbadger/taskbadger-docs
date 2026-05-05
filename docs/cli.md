@@ -9,21 +9,28 @@ without the need to write any code.
 
 ## Installation
 
-The CLI is bundled with the Python client library. To install it you need:
+The CLI ships with the Python client library but its dependencies are an optional
+extra. To install it you need:
 
-* Python > 3.7
+* Python ≥ 3.10
 
 The recommended approach is to install the CLI as a tool using [uv](https://docs.astral.sh/uv/):
 
 ```shell
-$ uv tool install taskbadger
+$ uv tool install 'taskbadger[cli]'
 ```
 
 Alternatively you can install it into a virtual environment:
 
 ```shell
-$ uv pip install taskbadger
+$ uv pip install 'taskbadger[cli]'
 ```
+
+!!!note "Since v2.0.0"
+
+    The `cli` extra is required to run the `taskbadger` command. Installing
+    `taskbadger` without it gives you the SDK only; running the CLI in that
+    state will print an install hint rather than an `ImportError`.
 
 ## Monitoring processes
 
