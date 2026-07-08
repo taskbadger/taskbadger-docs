@@ -84,6 +84,7 @@ nav:
     - 'Basic Usage': 'python.md'
     - 'Function Decorator': 'python-decorator.md'
     - 'Celery Integration': 'python-celery.md'
+    - 'Procrastinate Integration': 'python-procrastinate.md'
   - 'Changelog':
     - 'changelog.md'
 
