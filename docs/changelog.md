@@ -5,6 +5,16 @@ hide:
 
 # Changelog
 
+## v2.1.0
+
+**2026-07-08**
+
+**Python SDK**
+
+* **NEW** [Procrastinate integration](python-procrastinate.md) for automatically tracking Procrastinate jobs, including periodic tasks. Install with `pip install 'taskbadger[procrastinate]'`.
+* **NEW** Tasks now have a [`queue`](data_model.md#queue) field, set automatically from the routing key (Celery) and task queue (Procrastinate). Also available on `create_task` / `update_task` and the CLI `create` / `update` commands.
+* **HOUSEKEEPING** Dependency upgrades.
+
 ## v2.0.0
 
 **2026-05-05**

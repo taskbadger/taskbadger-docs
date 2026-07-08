@@ -1,0 +1,170 @@
+# Procrastinate Integration
+
+==Since v2.1.0==
+
+The Procrastinate integration lets you automatically create and update Task Badger tasks from
+[Procrastinate](https://procrastinate.readthedocs.io/){:target="_blank"} jobs. It tracks the full
+lifecycle of a job — `pending` when the job is deferred, `processing` when the worker starts it, and
+`success` or `error` when it finishes.
+
+Install the optional extra to pull in Procrastinate:
+
+```bash
+uv add 'taskbadger[procrastinate]'
+# or: pip install 'taskbadger[procrastinate]'
+```
+
+There are two ways to use the integration:
+
+1. Use the `ProcrastinateSystemIntegration` to automatically track all tasks on a Procrastinate `App`.
+2. Use the `@track` decorator on individual tasks you wish to track.
+
+You can use both at the same time. The `@track` decorator is also useful when you want to access the
+Task Badger task object within the body of a job.
+
+## Procrastinate System Integration
+
+To track every task on a Procrastinate `App`, register the `ProcrastinateSystemIntegration` when
+initializing Task Badger:
+
+```python
+import taskbadger
+from taskbadger.systems.procrastinate import ProcrastinateSystemIntegration
+
+taskbadger.init(
+    token="YOUR_API_KEY",
+    systems=[ProcrastinateSystemIntegration(app=my_procrastinate_app)],
+    tags={"environment": "production"},
+)
+```
+
+### System Integration Options
+
+The `ProcrastinateSystemIntegration` class takes the following parameters:
+
+- `app`: The `procrastinate.App` instance to instrument. **Required.**
+- `auto_track_tasks`: Set this to `False` to disable automatic tracking of tasks. Tasks decorated with
+  `@track` will still be tracked.
+- `includes`: A list of task names or regex patterns to include. If this is set, only tasks that match
+  one of the patterns will be tracked.
+- `excludes`: A list of task names or regex patterns to exclude. If this is set, tasks that match one of
+  the patterns will not be tracked.
+- `record_task_args`: If `True`, the job's keyword arguments will be recorded in the Task Badger task
+  data under `procrastinate_task_kwargs`.
+
+Patterns are matched against the full task name using `re.fullmatch`. Exclusions take precedence over
+inclusions, so if a task name matches both an include and an exclude, it will be excluded.
+
+Procrastinate's built-in housekeeping tasks (those named `builtin:...` or `procrastinate.*`) are never
+auto-tracked.
+
+```python
+taskbadger.init(
+    token="YOUR_API_KEY",
+    systems=[ProcrastinateSystemIntegration(
+        app=app,
+        includes=[r"myapp\..*"],
+        excludes=[r"myapp\.cleanup\..*"],
+        record_task_args=True,
+    )],
+)
+```
+
+!!! info
+
+    Construct the integration **after** all tasks and blueprints have been registered on the `App`.
+    Tasks added via `app.add_tasks_from(blueprint)` after the integration is constructed are not
+    auto-instrumented — apply `@track` to those tasks explicitly.
+
+## The `track` Decorator
+
+To track individual tasks, or if you want access to the Task Badger task object within the body of a
+job, apply the `@track` decorator **outside** (above) the `@app.task` decorator:
+
+```python
+import procrastinate
+from taskbadger.procrastinate import track
+
+app = procrastinate.App(connector=...)
+
+
+@track
+@app.task(queue="default")
+async def add(a, b):
+    return a + b
+```
+
+With this change a Task Badger task is created in the `pending` state when the job is deferred, and it
+is updated to `processing` and then `success` or `error` as the worker runs it.
+
+Tasks decorated with `@track` are always tracked, irrespective of the `includes` / `excludes` rules on
+the `ProcrastinateSystemIntegration`.
+
+### Task Customization
+
+The `@track` decorator accepts the following optional keyword arguments, applied when the Task Badger
+task is created:
+
+- `name`: The Task Badger task name. Defaults to the Procrastinate task's name.
+- `value_max`: The maximum value for the task.
+- `tags`: A dictionary of tags applied to the task.
+- `data`: A dictionary of initial data merged into the task.
+- `record_task_args`: If `True`, the job's keyword arguments are recorded under
+  `data["procrastinate_task_kwargs"]`. Defaults to inheriting the value from the
+  `ProcrastinateSystemIntegration` if one is configured, otherwise `False`.
+
+```python
+@track(name="report", value_max=100, tags={"env": "prod"}, record_task_args=True)
+@app.task
+async def report(rows):
+    ...
+```
+
+## Accessing the Task Object
+
+Use `current_task()` to get the Task Badger task for the currently-running job. This is useful for
+updating progress or data from within the job body:
+
+```python
+from taskbadger.procrastinate import track, current_task
+
+
+@track
+@app.task
+async def report(rows):
+    tb = current_task()
+    for i, row in enumerate(rows):
+        await process(row)
+        if i % 10 == 0:
+            tb.update(value=i, value_max=len(rows))
+```
+
+!!! note
+
+    `current_task()` returns `None` outside of a tracked job, if Task Badger has not been
+    [configured](python.md#configure), or if the task could not be fetched.
+
+## Periodic Tasks
+
+Periodic tasks scheduled with `@app.periodic` are tracked as well. Each periodic deferral creates a new
+Task Badger task, so you can monitor the history and health of your scheduled jobs.
+
+## Queue Field
+
+The name of the Procrastinate queue a task is deferred to is automatically recorded on the Task Badger
+task's [`queue`](data_model.md#queue) field.
+
+## Known Limitations
+
+Procrastinate has no signals or middleware system, so the integration works by wrapping the task
+function and the `defer` methods. This leads to a few cases that are not tracked:
+
+- **`task.configure(...).defer(...)` is not tracked.** `configure()` returns a separate `JobDeferrer`
+  whose methods bypass the wrapper. Use `task.defer(...)` directly for tracked deferrals. Jobs deferred
+  via `configure().defer()` will still run normally, they just won't appear in Task Badger.
+- **`task.batch_defer*` is not tracked**, for the same reason.
+- **Tasks added via `app.add_tasks_from(blueprint)` after the `ProcrastinateSystemIntegration` is
+  constructed are not auto-instrumented.** Construct the integration after all blueprints are
+  registered, or apply `@track` to those tasks explicitly.
+
+Cancelled, aborted, and retried jobs surface as `error` in Task Badger.

@@ -65,6 +65,12 @@ The main attributes or a task are:
 :   A list of tags that can be used to categorize tasks. Tags are useful for filtering tasks in the UI. Each tag
     has a name and a value. For example, a task may have a tag `environment:production`.
 
+<a name="queue"></a>
+`queue`
+
+:   The name of the queue the task was submitted to. This is set automatically by the Celery and
+    Procrastinate integrations and can also be set explicitly when creating or updating a task.
+
 ### Example Task
 
 ```json
@@ -90,7 +96,8 @@ The main attributes or a task are:
   "public_url": "https://taskbadger.net/public/tasks/57ae8eVBrH7jbDgmYj6Ut2vR9S/",
   "tags": [
     {"environment": "production"}
-  ]
+  ],
+  "queue": "default"
 }
 ```
 
