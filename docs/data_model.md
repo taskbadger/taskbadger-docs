@@ -51,7 +51,7 @@ The main attributes or a task are:
 
 `max_runtime`
 
-:   This value can be used in conjunction with task actions and monitors to trigger actions if a task
+:   This value can be used in conjunction with [actions](actions.md) and monitors to trigger alerts if a task
     exceeds its expected runtime. The value is in seconds.
 
 `stale_timeout`
@@ -201,64 +201,10 @@ modified again (with the potential exception of 'stale').
     to any other state via an update.
 
 
-## Task Actions
+## Actions
 
-Actions are at the core of Task Badger's secret sauce. They allow you to send notifications, perform callouts,
+Actions are at the core of Task Badger's alerting. They allow you to send notifications, perform callouts,
 and more based on task events.
 
-Every action specifies an [integration](integrations.md) e.g. `email`, and a trigger definition which is
-like a crontab expression, but for tasks. For example, `*/25%,success` means, "execute
-this action when the task value passes 25%, 50%, 75%, 100% and when the task status
-is set to `success`".
-
-A task may have multiple actions, each with their own integration and trigger definition.
-
-Here is an example of an action:
-
-```json
-{
-  "id": 640,
-  "task": "57ae8eVBrH7jbDgmYj6Ut2vR9S",
-  "trigger": "success,error",
-  "integration": "email",
-  "status": "active",
-  "config": {
-    "to": "me@example.com,you@example.com"
-  },
-  "created": "2022-11-16T07:10:30.551808Z",
-  "updated": "2022-11-16T07:10:30.551818Z"
-}
-```
-
-### Action Triggers
-
-An action trigger is a comma-separated list of trigger points. Each trigger point is one of the following:
-
-* A numeric value which is matched against the task `value`.
-* A percentage value which is matched against the task `value_percent`.
-* A task status which is matched against the task `status`.
-* A special value `max_runtime_exeeded` which is matched when the task exceeds its `max_runtime` value.
-
-Numeric and percentage trigger points can also be prefixed with `*/` to indicate that the trigger should
-fire at regular intervals. For example, `*/50%` will fire at 0%, 50% and 100%.
-
-Examples:
-
-| Trigger               | Trigger Fire Points                                                          |
-|-----------------------|------------------------------------------------------------------------------|
-| `*/30%`               | When `value_percent` passes any multiple of 30%: 0%, 30%, 60%, 90%           |
-| `success,error,stale` | When the state changes to any of the listed states                           |
-| `95%,250,error`       | At 95%, when the value reaches or passes 250, when the state becomes `error` | 
-
-### Action Edge cases
-
-If a task value or status skips past multiple trigger points, only the last matching trigger will be
-executed.
-
-For example, an action configured with `20,40,80` whose value goes from `0` directly to `90` will
-skip over the `20` and `40` events and only fire the `80` event. This also applies to task
-status triggers.
-
-This also applies to multiple trigger points that are reached simultaneously, for example, let's say
-an action has the following trigger: `100,success`. It is quite likely that the task could reach
-both those states at the same time but the action will only fire once.
+Actions are configured in the web UI and apply across your tasks. See [Actions](actions.md) for
+details on channels and triggers.

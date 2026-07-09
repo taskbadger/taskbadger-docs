@@ -18,11 +18,8 @@ In the following example we'll be using Django and Celery.
 ### 1. Create the task in a view
 
 ```python title="views.py"
-from django.conf import settings
 from taskbadger import StatusEnum, Task
 from apps.export.tasks import export_user_data
-
-NOTIFY_EMAIL = settings.ADMINS[0][1]
 
 
 @require_POST
@@ -30,7 +27,6 @@ def export_data(request):
     task = Task.create(
         "data export",
         data={"user_id": request.user.id},
-        actions=[Action("error,stale", integration=EmailIntegration(to=NOTIFY_EMAIL))],
         stale_timeout=60,  # seconds
     )
 
@@ -38,8 +34,8 @@ def export_data(request):
     return JsonResponse({"task_id": task.id})
 ```
 
-In addition to creating the task, we've also added an action so that we will get notified if the task
-fails or does not complete.
+To get notified if the task fails or does not complete, configure an [action](actions.md)
+in the web UI.
 
 ### 2. Update the task 
 
@@ -87,7 +83,6 @@ from celery.app import shared_task
 from taskbadger.celery import Task
 
 @shared_task(bind=True, base=Task, taskbadger_kwargs={
-    "actions": [Action("error,stale", integration=EmailIntegration(to=settings.ADMINS[0][1]))],
     "stale_timeout": 5
 })
 def export_user_data(self, user_id):
