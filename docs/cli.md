@@ -62,25 +62,10 @@ For more details on these commands run `taskbadger <command> --help`.
 
 ## Actions
 
-You can create actions for CLI tasks using the `--action` (`-a`) argument. The
-format for this argument is string with three components, separated by a space:
-
-```mermaid
-flowchart LR
-    trigger --- integration
-    integration --- config
-```
-
-The config parameter is a comma-separated list of key value pairs.
-
-Here is an example:
-
-```bash
-$ taskbadger run "demo task" --action error email to:me@test.com -- path/to/script.sh
-```
-
-If the task state becomes `stale` or `error`, use the `email` integration to
-send a notification to `me@test.com`.
+!!!note "Deprecation"
+    The `--action` (`-a`) argument for attaching actions to CLI tasks is **deprecated** and
+    will be removed in a future release. Configure [actions](actions.md) in the web UI instead.
+    Actions apply across your tasks, so you no longer need to attach them per command.
 
 ## Configuration
 

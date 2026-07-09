@@ -49,7 +49,7 @@ taskbadger run "my task" -- ./script.sh
 
 - **Task tracking** — monitor status, progress, and metadata for any background job
 - **Celery integration** — automatic tracking of all Celery tasks with zero code changes
-- **Actions and triggers** — get notified via email, webhook, or other integrations on task events
+- **Actions and triggers** — get notified via email, webhook, or other integrations on task events, configured in the web UI
 - **CLI** — monitor shell commands without writing code
 
 ## Learn More
@@ -57,5 +57,6 @@ taskbadger run "my task" -- ./script.sh
 - [Quick Start](quick.md) — full setup walkthrough
 - [Python SDK](python.md) — SDK reference
 - [CLI](cli.md) — command line usage
-- [Data Model](data_model.md) — task states, actions, and triggers
+- [Data Model](data_model.md) — task states and fields
+- [Actions](actions.md) — notifications and triggers
 - [API Endpoints](api.md) — REST API reference

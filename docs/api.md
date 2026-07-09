@@ -20,6 +20,10 @@ task URL is:
 | Update task action  | `PATCH /api/{org}/{project}/tasks/{task_id}/actions/{action_id}/`                                                             |
 | Cancel task action  | `DELETE /api/{org}/{project}/tasks/{task_id}/actions/{action_id}/`                                                            |
 
+!!!note "Deprecation"
+    The endpoints for adding and updating task actions (as well as the `actions` field on the
+    create/update task endpoints) are **deprecated** and will be removed in a future release.
+    Configure [actions](actions.md) in the web UI instead.
 
 Full details of the API endpoints can be viewed at [https://taskbadger.net/api/docs/](https://taskbadger.net/api/docs/){:target="_blank"}
 

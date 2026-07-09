@@ -58,15 +58,14 @@ Config written to ~/.config/taskbadger/config
 
 ```shell
 $ taskbadger run "demo task" \
-  --action "error email to:me@test.com" \
   --tag "environment=staging" \
   -- path/to/script.sh
 
 Task created: https://taskbadger.net/public/tasks/xyz/
 ```
 
-If the command completes with a non-zero exit code the task status will be set to `error`
-and an email will be sent to `me@test.com`.
+If the command completes with a non-zero exit code the task status will be set to `error`.
+To get notified when that happens, configure an [action](actions.md) in the web UI.
 
 See more about the [CLI](cli.md).
 
@@ -172,32 +171,11 @@ Here we update the task `status` and `value`. By default, a task's value can ran
       -d '{"status": "processing", "value": 5}'
     ```
 
-### Add an action to the task
+### Get notified about the task
 
-Here we update create a new action for the task so that we get notified when the task completes.
-
-=== "Python"
-
-    ```python
-    from taskbadger import Action, EmailIntegration
-    task.add_actions([
-        Action(
-            "*/10%,success,error",
-            integration=EmailIntegration(to="me@example.com")
-        )
-    ])
-    ```
-
-=== "Shell"
-    
-    ```shell
-    $ curl -X PATCH "https://taskbadger.net/api/${ORG}/${PROJECT}/tasks/${TASK_ID}/" \
-      -H "Authorization: Bearer ${API_KEY}" \
-      -H "Content-Type: application/json" \
-      -d '{"actions":[{"integration":"email","trigger":"success,error","config":{"to":"me@example.com"}}]}'
-    ```
-
-Read more about [actions](data_model.md#task-actions).
+To get notified when the task completes, fails, or reaches a progress threshold, configure an
+[action](actions.md) in the web UI. Actions apply across your tasks, so there's no need to
+attach them in code.
 
 ### Mark the task complete
 

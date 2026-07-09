@@ -49,20 +49,14 @@ The SDK provides a [Task](#taskbadger.Task) class which offers a convenient inte
 Tasks are created by calling the `Task.create` method:
 
 ```python
-from taskbadger import Task, Action, EmailIntegration
+from taskbadger import Task
 
-# create a new task with custom data and an action definition
+# create a new task with custom data and tags
 task = Task.create(
     "task name",
     data={
         "custom": "data"
     },
-    actions=[
-        Action(
-            trigger="*/10%,success,error",
-            integration=EmailIntegration(to="me@example.com")
-        )
-    ],
     tags={"tenant": "acme"}
 )
 ```
@@ -75,8 +69,7 @@ from taskbadger import Task
 task = Task.get(task_id)
 ```
 
-The task object provides methods for updating the properties of a task, adding custom data
-and adding actions.
+The task object provides methods for updating the properties of a task and adding custom data.
 
 ### Connection management
 
