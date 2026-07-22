@@ -218,7 +218,7 @@ Task Badger will create task records for each inner invocation with metadata sim
 }
 ```
 
-**Opting out**
+## Opting out
 
 If you want to prevent TaskBadger from tracking a particular execution, set the `taskbadger_track` header (False) when publishing:
 

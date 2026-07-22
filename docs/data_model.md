@@ -71,6 +71,13 @@ The main attributes or a task are:
 :   The name of the queue the task was submitted to. This is set automatically by the Celery and
     Procrastinate integrations and can also be set explicitly when creating or updating a task.
 
+<a name="external_id"></a>
+`external_id`
+
+:   An identifier from the originating system (e.g. a Celery task ID) that lets you correlate a task
+    with its logs. Set it when creating or updating a task, then filter tasks by exact match on this
+    value in the web UI.
+
 ### Example Task
 
 ```json
@@ -97,7 +104,8 @@ The main attributes or a task are:
   "tags": [
     {"environment": "production"}
   ],
-  "queue": "default"
+  "queue": "default",
+  "external_id": "celery-abc-123"
 }
 ```
 
