@@ -154,6 +154,12 @@ Task Badger task, so you can monitor the history and health of your scheduled jo
 The name of the Procrastinate queue a task is deferred to is automatically recorded on the Task Badger
 task's [`queue`](data_model.md#queue) field.
 
+## External ID
+
+The Procrastinate job ID is automatically recorded on the Task Badger task's
+[`external_id`](data_model.md#external_id) field, letting you correlate the Task Badger task with the
+originating Procrastinate job.
+
 ## Known Limitations
 
 Procrastinate has no signals or middleware system, so the integration works by wrapping the task

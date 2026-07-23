@@ -218,6 +218,12 @@ Task Badger will create task records for each inner invocation with metadata sim
 }
 ```
 
+## External ID
+
+The Celery task ID is automatically recorded on the Task Badger task's
+[`external_id`](data_model.md#external_id) field, letting you correlate the Task Badger task with the
+originating Celery task.
+
 ## Opting out
 
 If you want to prevent TaskBadger from tracking a particular execution, set the `taskbadger_track` header (False) when publishing:
