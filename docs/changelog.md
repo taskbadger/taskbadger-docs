@@ -5,6 +5,25 @@ hide:
 
 # Changelog
 
+Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
+
+## v2.3.0
+
+**2026-07-23**
+
+**Python SDK**
+
+* **NEW** The Celery and Procrastinate integrations now automatically record the originating task/job ID on the task [`external_id`](data_model.md#external_id) field.
+
+## v2.2.0
+
+**2026-07-09**
+
+**Python SDK**
+
+* **DEPRECATED** Per-task actions are deprecated.
+* **HOUSEKEEPING** Fix flaky Celery retry test.
+
 ## v2.1.0
 
 **2026-07-08**
