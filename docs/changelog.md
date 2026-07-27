@@ -7,6 +7,14 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
+## v2.3.1
+
+**2026-07-27**
+
+**Python SDK**
+
+* **FIX** Guard against unregistered task in `before_task_publish` handler.
+
 ## v2.3.0
 
 **2026-07-23**
