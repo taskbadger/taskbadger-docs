@@ -7,6 +7,15 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
+## v2.4.0
+
+**2026-07-30**
+
+**Python SDK**
+
+* **NEW** `heartbeat_interval` option for the [Celery](python-celery.md#keeping-long-running-tasks-fresh) and [Procrastinate](python-procrastinate.md#keeping-long-running-tasks-fresh) integrations. The worker updates running tasks for you so that long-running tasks don't go [`stale`](data_model.md#stale_timeout).
+* **FIX** An eager Celery task no longer closes a Task Badger session opened by its caller.
+
 ## v2.3.1
 
 **2026-07-27**
