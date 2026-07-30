@@ -51,6 +51,10 @@ The `ProcrastinateSystemIntegration` class takes the following parameters:
   the patterns will not be tracked.
 - `record_task_args`: If `True`, the job's keyword arguments will be recorded in the Task Badger task
   data under `procrastinate_task_kwargs`.
+- `heartbeat_interval`: Seconds between automatic task updates while a task is running. See
+  [Keeping Long-Running Tasks Fresh](#keeping-long-running-tasks-fresh). ==Since v2.4.0==
+- `stale_timeout`: The [`stale_timeout`](data_model.md#stale_timeout) to set on tracked tasks.
+  ==Since v2.4.0==
 
 Patterns are matched against the full task name using `re.fullmatch`. Exclusions take precedence over
 inclusions, so if a task name matches both an include and an exclude, it will be excluded.
@@ -112,6 +116,13 @@ task is created:
 - `record_task_args`: If `True`, the job's keyword arguments are recorded under
   `data["procrastinate_task_kwargs"]`. Defaults to inheriting the value from the
   `ProcrastinateSystemIntegration` if one is configured, otherwise `False`.
+- `heartbeat_interval`: Seconds between automatic task updates while the task is running. See
+  [Keeping Long-Running Tasks Fresh](#keeping-long-running-tasks-fresh). ==Since v2.4.0==
+- `stale_timeout`: The [`stale_timeout`](data_model.md#stale_timeout) to set on the task.
+  ==Since v2.4.0==
+
+`record_task_args`, `heartbeat_interval` and `stale_timeout` are inherited from the
+`ProcrastinateSystemIntegration` when they are not set on the decorator.
 
 ```python
 @track(name="report", value_max=100, tags={"env": "prod"}, record_task_args=True)
@@ -143,6 +154,47 @@ async def report(rows):
 
     `current_task()` returns `None` outside of a tracked job, if Task Badger has not been
     [configured](python.md#configure), or if the task could not be fetched.
+
+## Keeping Long-Running Tasks Fresh
+
+==Since v2.4.0==
+
+A task with a [`stale_timeout`](data_model.md#stale_timeout) is marked `stale` if it goes too long
+without an update, so a long-running task that doesn't report progress will trip the timeout while it
+is perfectly healthy. Setting `heartbeat_interval` (seconds) makes the worker update the task for you
+while it runs, instead of having to do it from the job body.
+
+The interval can be set on the task or on the system integration:
+
+```python
+# on the task
+@track(heartbeat_interval=60)
+@app.task
+async def slow_job():
+    ...
+
+
+# for all tracked tasks
+taskbadger.init(
+    token="YOUR_API_KEY",
+    systems=[ProcrastinateSystemIntegration(app=app, heartbeat_interval=60)],
+)
+```
+
+Unless `stale_timeout` is given explicitly it is set to twice the interval, so both of the examples
+above create tasks with a `stale_timeout` of 120 seconds. Pass both to control it:
+
+```python
+@track(heartbeat_interval=60, stale_timeout=300)
+@app.task
+async def slow_job():
+    ...
+```
+
+!!! note
+
+    All running tasks are updated from a single background thread per worker process, started the
+    first time a task with a heartbeat runs. Updates stop when the task finishes.
 
 ## Periodic Tasks
 
