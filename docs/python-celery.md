@@ -41,6 +41,15 @@ The `CelerySystemIntegration` class takes a number of optional parameters:
   
     ==Since v1.4.0==
 
+- `heartbeat_interval`: Seconds between automatic task updates while a task is running. See
+  [Keeping Long-Running Tasks Fresh](#keeping-long-running-tasks-fresh).
+
+    ==Since v2.4.0==
+
+- `stale_timeout`: The [`stale_timeout`](data_model.md#stale_timeout) to set on tracked tasks.
+
+    ==Since v2.4.0==
+
 Exclusions take precedence over inclusions so if a task name matches both an include and an exclude, it will be
 excluded.
 
@@ -175,6 +184,48 @@ def my_task(self, items):
     This could indicate that the Task Badger API has not been [configured](python.md#configure), there was an error
     creating the task, or the task is being run synchronously e.g. via `.apply()` or calling the task
     using `.map` or `.starmap`, `.chunk`.
+
+## Keeping Long-Running Tasks Fresh
+
+==Since v2.4.0==
+
+A task with a [`stale_timeout`](data_model.md#stale_timeout) is marked `stale` if it goes too long
+without an update, so a long-running task that doesn't report progress will trip the timeout while it
+is perfectly healthy. Setting `heartbeat_interval` (seconds) makes the worker update the task for you
+while it runs, instead of having to do it from the task body.
+
+The interval can be set on the system integration, on the task, or per call:
+
+```python
+# for all tracked tasks
+taskbadger.init(
+    token="YOUR_API_KEY",
+    systems=[CelerySystemIntegration(heartbeat_interval=60)],
+)
+
+# on the task
+@app.task(base=Task, taskbadger_heartbeat_interval=60)
+def my_task():
+    ...
+
+# per call
+my_task.apply_async(taskbadger_heartbeat_interval=60)
+```
+
+Unless `stale_timeout` is given explicitly it is set to twice the interval, so each of the examples
+above creates the task with a `stale_timeout` of 120 seconds. Pass both to control it:
+
+```python
+my_task.apply_async(taskbadger_heartbeat_interval=60, taskbadger_stale_timeout=300)
+```
+
+As with the other options, values set on the task or on `apply_async` take precedence over the values
+set on `CelerySystemIntegration`.
+
+!!! note
+
+    All running tasks are updated from a single background thread per worker process, started the
+    first time a task with a heartbeat runs. Updates stop when the task finishes.
 
 ## Canvas primitives (map / starmap / chunks)
 

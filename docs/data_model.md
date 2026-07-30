@@ -54,6 +54,7 @@ The main attributes or a task are:
 :   This value can be used in conjunction with [actions](actions.md) and monitors to trigger alerts if a task
     exceeds its expected runtime. The value is in seconds.
 
+<a name="stale_timeout"></a>
 `stale_timeout`
 
 :    This represents the maximum number of seconds allowed between task updates. If a task does not receive
