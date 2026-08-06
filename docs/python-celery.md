@@ -19,7 +19,7 @@ task that is executed by the Celery workers (except the internal Celery tasks), 
 
 ```python
 import taskbadger
-from taskbadger.systems import CelerySystemIntegration
+from taskbadger.systems.celery import CelerySystemIntegration
 
 taskbadger.init(
     token="YOUR_API_KEY",
@@ -107,8 +107,18 @@ The Task Badger task will also be updated when the task completes.
 ### Task Customization
 
 You can pass additional parameters to the Task Badger `Task` class which will be used when creating the task.
-This can be done by passing keyword arguments prefixed with `taskbadger_` to the `.appy_async()` function or
+This can be done by passing keyword arguments prefixed with `taskbadger_` to the `.apply_async()` function or
 to the task decorator.
+
+!!! warning "`taskbadger_` arguments require the task base class"
+
+    It is `taskbadger.celery.Task` that intercepts `taskbadger_`-prefixed arguments to `apply_async`, so
+    they only work on tasks declared with `base=Task`. On a plain Celery task they are silently ignored:
+    the task still publishes, and is still tracked if the
+    [system integration](#celery-system-integration) tracks it, but the options have no effect.
+
+    To customize a task that is tracked by the system integration alone, pass the options in the
+    message headers instead — see [Customization without the task base class](#customization-without-the-task-base-class).
 
 ```python
 # using the task decorator
@@ -150,6 +160,48 @@ my_task.apply_async(args=[arg1, arg2], taskbadger_kwargs={
 
     ==Since v1.4.0==
 
+
+### Customization without the task base class
+
+Task Badger options can also be passed in the Celery message headers, which works for any task,
+including plain Celery tasks tracked by the `CelerySystemIntegration`:
+
+```python
+my_task.apply_async(
+    args=[arg1, arg2],
+    headers={"taskbadger_kwargs": {
+        "name": "my task",
+        "value_max": 1000,
+        "data": {"custom": "data"},
+    }},
+)
+```
+
+Unlike the `taskbadger_`-prefixed arguments, the header is read when the task is published rather than
+by the task class, so no `base=Task` is needed. It takes the same options as `taskbadger_kwargs`, minus
+the prefix, and takes precedence over values set on the task decorator.
+
+If the task would not otherwise be tracked — it isn't using the base class and doesn't match the system
+integration's tracking rules — add `taskbadger_track` to the headers to track it anyway:
+
+```python
+my_task.apply_async(
+    args=[arg1, arg2],
+    headers={
+        "taskbadger_track": True,
+        "taskbadger_kwargs": {"name": "my task"},
+    },
+)
+```
+
+!!! note
+
+    `record_task_args` is a header of its own rather than an entry in `taskbadger_kwargs`:
+    `headers={"taskbadger_record_task_args": True}`.
+
+    The `taskbadger_task_id` attribute and `get_taskbadger_task()` method of the
+    [result object](#basic-usage) are added by `taskbadger.celery.Task`, so they are not available on
+    the result when using headers alone.
 
 ### Accessing the Task Object
 

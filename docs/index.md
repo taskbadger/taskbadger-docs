@@ -31,7 +31,7 @@ task.update(status=StatusEnum.SUCCESS, value=100)
 Or monitor Celery tasks automatically with the [Celery integration](python-celery.md):
 
 ```python
-from taskbadger.systems import CelerySystemIntegration
+from taskbadger.systems.celery import CelerySystemIntegration
 
 taskbadger.init(
     token="YOUR_API_KEY",
