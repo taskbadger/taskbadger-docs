@@ -17,6 +17,23 @@ status to `success` when the function completes or `error` if an exception is ra
 The decorator also applies the `taskbadger.Session` context manager to the function.
 See [connection management](python.md#connection-management).
 
+When the function raises, the exception is recorded on the task data along with any context from the
+configured [context providers](python.md#error-context-providers).
+
+## Nested tasks
+
+==Since v2.5.0==
+
+Tasks tracked by another integration while a decorated function is running are nested under its task
+via the [`parent`](data_model.md#parent) field. That means other `@track` decorated functions called
+from the body, as well as [Celery](python-celery.md#subtasks) and
+[Procrastinate](python-procrastinate.md#subtasks) tasks enqueued from it. A bare `Task.create` in the
+function body is not nested unless you pass `parent` yourself.
+
+Tasks nest a single level deep, so anything created by a decorated function that is itself a child
+becomes a sibling of that child rather than a grandchild. Passing `parent` to the decorator explicitly
+overrides the automatic nesting.
+
 ## API Docs
 
 ::: taskbadger.track

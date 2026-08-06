@@ -269,6 +269,35 @@ Task Badger will create task records for each inner invocation with metadata sim
 }
 ```
 
+## Subtasks
+
+==Since v2.5.0==
+
+A Celery task published from inside a tracked task is automatically nested under it via the
+[`parent`](data_model.md#parent) field, so you can see the work a task spawned.
+
+Tasks nest a single level deep. A task published by a task that is itself a child becomes a sibling
+of that child rather than a grandchild.
+
+What gets nested:
+
+- Tasks published from the body of a tracked task via `.delay()` or `.apply_async()`, including when
+  Celery runs them eagerly.
+- Retries, which are nested under the first attempt.
+
+What does not get nested:
+
+- The next link of a `chain`, and `link` callbacks. These are successors of the task rather than work
+  it chose to enqueue.
+- Tasks produced by [canvas primitives](#canvas-primitives-map-starmap-chunks) (`map`, `starmap`,
+  `chunks`) when they run on a worker. Their Task Badger tasks are created in the worker rather than
+  at publish time, so the enclosing task isn't visible there. They do nest when Celery runs eagerly.
+
+!!! note
+
+    Known edge case: if a chain's next link is *also* called directly from the task body, that direct
+    call is not nested.
+
 ## External ID
 
 The Celery task ID is automatically recorded on the Task Badger task's

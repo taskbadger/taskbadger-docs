@@ -7,6 +7,16 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
+## v2.5.0
+
+**2026-08-06**
+
+**Python SDK**
+
+* **NEW** [Parent and child tasks](python.md#parent-and-child-tasks). Tasks can be nested one level deep via the [`parent`](data_model.md#parent) field on `create_task` / `update_task`, and `list_tasks` can filter by parent. The [`@track` decorator](python-decorator.md#nested-tasks), [Celery](python-celery.md#subtasks) and [Procrastinate](python-procrastinate.md#subtasks) integrations set it automatically for tasks enqueued from within a tracked task.
+* **NEW** [Context providers](python.md#error-context-providers), a pluggable way to attach extra data to a task when it errors, along with a [Sentry provider](python.md#sentry) that links a failed task to its Sentry issue. Install with `pip install 'taskbadger[sentry]'`.
+* **NEW** `Task.error` accepts an `exception` argument, which is passed to the configured context providers.
+
 ## v2.4.0
 
 **2026-07-30**

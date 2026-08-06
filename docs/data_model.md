@@ -44,6 +44,7 @@ The main attributes or a task are:
 :   This is a computed percentage which is equivalent to `100 * value / value_max`. This will be `null`
     if **value** is null.
 
+<a name="data"></a>
 `data`
 
 :   This can be used to store arbitrary JSON data that may be useful to store along with the task such
@@ -79,6 +80,15 @@ The main attributes or a task are:
     with its logs. Set it when creating or updating a task, then filter tasks by exact match on this
     value in the web UI.
 
+<a name="parent"></a>
+`parent`
+
+:   The ID of the task this task is part of. Tasks can only be nested one level deep, so the parent
+    must be a task that is not itself a child. A task's parent can not be changed once it has been
+    set. The `track` decorator and the Celery and Procrastinate integrations set this automatically
+    for tasks enqueued from within a tracked task, and it can also be set explicitly when creating or
+    updating a task.
+
 ### Example Task
 
 ```json
@@ -106,7 +116,8 @@ The main attributes or a task are:
     {"environment": "production"}
   ],
   "queue": "default",
-  "external_id": "celery-abc-123"
+  "external_id": "celery-abc-123",
+  "parent": null
 }
 ```
 
