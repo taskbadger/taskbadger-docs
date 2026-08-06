@@ -120,14 +120,14 @@ def my_task(arg1, arg2):
 
 # using individual keyword arguments
 my_task.apply_async(
-    arg1, arg2,
+    args=[arg1, arg2],
     taskbadger_name="my task",
     taskbadger_value_max=1000,
     taskbadger_data={"custom": "data"},
 )
 
 # using a dictionary
-my_task.apply_async(arg1, arg2, taskbadger_kwargs={
+my_task.apply_async(args=[arg1, arg2], taskbadger_kwargs={
     "name": "my task",
     "value_max": 1000,
     "data": {"custom": "data"}
