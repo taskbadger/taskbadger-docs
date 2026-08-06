@@ -350,6 +350,24 @@ What does not get nested:
     Known edge case: if a chain's next link is *also* called directly from the task body, that direct
     call is not nested.
 
+To override the automatic nesting, pass `taskbadger_parent` for the call. An explicit `None` makes the
+task a root task even though it was published from inside a tracked task:
+
+```python
+# nest under a different task
+my_task.apply_async(taskbadger_parent=other_task.id)
+
+# opt out of nesting
+my_task.apply_async(taskbadger_parent=None)
+```
+
+As with the other `taskbadger_` arguments this requires the task to use `base=Task`; without it, pass
+`headers={"taskbadger_kwargs": {"parent": None}}` instead. See
+[Customization without the task base class](#customization-without-the-task-base-class).
+
+==Since v2.5.1== eager tasks and [canvas primitives](#canvas-primitives-map-starmap-chunks) honour
+`taskbadger_parent` too; before that they always nested under the enclosing task.
+
 ## External ID
 
 The Celery task ID is automatically recorded on the Task Badger task's

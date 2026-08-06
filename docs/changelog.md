@@ -7,6 +7,16 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
+## v2.5.1
+
+**2026-08-06**
+
+**Python SDK**
+
+* **CHANGED** [`list_tasks`](python.md#listing-tasks) returns a `TaskList` of `taskbadger.Task` objects, which can be iterated over directly. It previously returned the generated `PaginatedTaskList`, whose `results` were internal models without the SDK's update methods. Note that an empty `TaskList` is falsy, where `PaginatedTaskList` was always truthy.
+* **FIX** Eager and canvas Celery tasks honour an explicit [`taskbadger_parent`](python-celery.md#subtasks), including `taskbadger_parent=None` to opt out of nesting.
+* **FIX** Copying or pickling a `Task` no longer recurses until the stack overflows.
+
 ## v2.5.0
 
 **2026-08-06**

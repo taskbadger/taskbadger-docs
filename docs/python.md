@@ -72,6 +72,46 @@ task = Task.get(task_id)
 
 The task object provides methods for updating the properties of a task and adding custom data.
 
+### Listing tasks
+
+`list_tasks` returns a [`TaskList`](#taskbadger.TaskList), a single page of tasks that you can iterate
+over directly. The tasks it yields are ordinary `Task` objects, so they can be updated in place:
+
+```python
+import taskbadger
+from taskbadger import StatusEnum
+
+for task in taskbadger.list_tasks(page_size=50):
+    if task.status == StatusEnum.PENDING:
+        task.canceled()
+```
+
+The `next_` and `previous` attributes hold the URL of the adjacent page, or are unset if there isn't
+one. To fetch the next page, pass its `cursor` query parameter back to `list_tasks`:
+
+```python
+from urllib.parse import parse_qs, urlparse
+
+page = taskbadger.list_tasks(page_size=100)
+while True:
+    for task in page:
+        ...
+    if not page.next_:
+        break
+    cursor = parse_qs(urlparse(page.next_).query)["cursor"][0]
+    page = taskbadger.list_tasks(page_size=100, cursor=cursor)
+```
+
+!!! note "Changed in v2.5.1"
+
+    `list_tasks` previously returned the generated `PaginatedTaskList` whose `results` were
+    `taskbadger.internal.models.Task` objects, without the SDK's `update()` / `safe_update()` methods.
+    It now returns a `TaskList` of `taskbadger.Task` objects.
+
+    A `TaskList` also has a length, so an empty page is falsy where `PaginatedTaskList` was always
+    truthy. If you have code like `if taskbadger.list_tasks(...):`, note that it now tests whether the
+    page has any tasks in it.
+
 ### Parent and child tasks
 
 ==Since v2.5.0==
@@ -94,7 +134,8 @@ Use `list_tasks` to fetch the children of a task:
 ```python
 import taskbadger
 
-children = taskbadger.list_tasks(parent=parent.id).results
+for child in taskbadger.list_tasks(parent=parent.id):
+    print(child.name, child.status)
 ```
 
 `Task.create` and `create_task` only nest a task when you pass `parent` explicitly. The
@@ -272,6 +313,8 @@ access to the API:
 ::: taskbadger.update_task
 
 ::: taskbadger.list_tasks
+
+::: taskbadger.TaskList
 
 ## Context Provider Reference
 
