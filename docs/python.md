@@ -33,6 +33,7 @@ page in the [Task Badger dashboard](https://taskbadger.net).
 | tags              | Global tags which are added to all tasks.                                                                 |
 | systems           | System integrations such as [Celery](python-celery.md)                                                    |
 | before_create     | A function that is called before a task is created. See [Before Create Callback](#before-create-callback) |
+| context_providers | Providers that attach extra data to a task when it errors. See [Error Context Providers](#error-context-providers) |
 | organization_slug | The organization identifier. Only required for legacy API keys.                                           |
 | project_slug      | The project identifier. Only required for legacy API keys.                                                |
 
@@ -70,6 +71,82 @@ task = Task.get(task_id)
 ```
 
 The task object provides methods for updating the properties of a task and adding custom data.
+
+### Listing tasks
+
+`list_tasks` returns a [`TaskList`](#taskbadger.TaskList), a single page of tasks that you can iterate
+over directly. The tasks it yields are ordinary `Task` objects, so they can be updated in place:
+
+```python
+import taskbadger
+from taskbadger import StatusEnum
+
+for task in taskbadger.list_tasks(page_size=50):
+    if task.status == StatusEnum.PENDING:
+        task.canceled()
+```
+
+The `next_` and `previous` attributes hold the URL of the adjacent page, or `None` if there isn't one.
+To fetch the next page, pass its `cursor` query parameter back to `list_tasks`:
+
+```python
+from urllib.parse import parse_qs, urlparse
+
+page = taskbadger.list_tasks(page_size=100)
+while True:
+    for task in page:
+        ...
+    if not page.next_:
+        break
+    cursor = parse_qs(urlparse(page.next_).query)["cursor"][0]
+    page = taskbadger.list_tasks(page_size=100, cursor=cursor)
+```
+
+!!! note "Changed in v2.5.1"
+
+    `list_tasks` previously returned the generated `PaginatedTaskList` whose `results` were
+    `taskbadger.internal.models.Task` objects, without the SDK's `update()` / `safe_update()` methods.
+    It now returns a `TaskList` of `taskbadger.Task` objects.
+
+    A `TaskList` also has a length, so an empty page is falsy where `PaginatedTaskList` was always
+    truthy. If you have code like `if taskbadger.list_tasks(...):`, note that it now tests whether the
+    page has any tasks in it.
+
+### Parent and child tasks
+
+==Since v2.5.0==
+
+A task can be nested under another task by passing the parent's ID as the
+[`parent`](data_model.md#parent) field:
+
+```python
+from taskbadger import Task
+
+parent = Task.create("import")
+child = Task.create("import.chunk", parent=parent.id)
+```
+
+Tasks nest a single level deep, so `parent` must be the ID of a task that is not itself a child.
+A task's parent can not be changed once it has been set. Both rules are enforced by the API rather
+than by the SDK, so breaking either one surfaces as a failed request.
+
+Use `list_tasks` to fetch the children of a task:
+
+```python
+import taskbadger
+
+for child in taskbadger.list_tasks(parent=parent.id):
+    print(child.name, child.status)
+```
+
+`Task.create` and `create_task` only nest a task when you pass `parent` explicitly. The
+[function decorator](python-decorator.md#nested-tasks), [Celery](python-celery.md#subtasks) and
+[Procrastinate](python-procrastinate.md#subtasks) integrations do it for you: a task enqueued while
+another tracked task is running is nested under it automatically. Because nesting is capped at one
+level, a task enqueued from within a *child* becomes a sibling of that child rather than a grandchild.
+
+Each integration excludes a few cases from the automatic nesting — see the linked pages for what
+does and doesn't get nested.
 
 ### Connection management
 
@@ -139,6 +216,116 @@ def before_create(task_data: dict) -> dict:
 
 ==Since v1.5.0==
 
+## Error Context Providers
+
+==Since v2.5.0==
+
+Context providers attach extra data to a task when it errors, for example a link back to the system
+that reported the exception. They are consulted whenever a tracked task fails — via the
+[function decorator](python-decorator.md), or the [Celery](python-celery.md) or
+[Procrastinate](python-procrastinate.md) integrations — and whatever a provider returns is stored on
+the task [`data`](data_model.md#data) under the provider's identifier.
+
+You can also call `Task.error(exception=...)` yourself, but read the caveat below first.
+
+!!! warning "`Task.error()` on its own has no baseline"
+
+    Those three integrations record the state of each provider as the task *starts*, so a provider can
+    tell context belonging to this task from context left over from something unrelated.
+
+    Calling `task.error(exception=...)` directly does consult the providers, but nothing took that
+    baseline, so they have nothing to compare against. With
+    [`SentryContextProvider`](#sentry) that means the task gets a link to whatever
+    `sentry_sdk.last_event_id()` happens to be — quite possibly a stale, unrelated issue.
+
+    Prefer letting an integration own the error path. If you must call `Task.error` yourself and the
+    link matters, pass the context in explicitly via `data` instead of relying on a provider.
+
+Providers are registered with `taskbadger.init`:
+
+```python
+import taskbadger
+from taskbadger.context_providers.sentry import SentryContextProvider
+
+taskbadger.init(
+    token="YOUR_API_KEY",
+    context_providers=[SentryContextProvider(organization_slug="acme")],
+)
+```
+
+A provider that raises is logged to the `taskbadger` logger and skipped, so it can never break the
+task update.
+
+### Sentry
+
+`SentryContextProvider` links a failed task to the Sentry issue for the same exception. It needs the
+`sentry-sdk` package, available via the `sentry` extra. If the package isn't installed the provider is
+a silent no-op — it adds no context and reports no error, so install the extra:
+
+```bash
+uv add 'taskbadger[sentry]'
+# or: pip install 'taskbadger[sentry]'
+```
+
+```python
+import taskbadger
+from taskbadger.context_providers.sentry import SentryContextProvider
+
+taskbadger.init(
+    token="YOUR_API_KEY",
+    context_providers=[SentryContextProvider(organization_slug="acme")],
+)
+```
+
+Failed tasks then carry the Sentry event ID in their data, plus a link to the issue when
+`organization_slug` is given:
+
+```json
+{
+  "exception": "bad input",
+  "sentry": {
+    "event_id": "5f8a...",
+    "url": "https://sentry.io/organizations/acme/issues/?query=5f8a..."
+  }
+}
+```
+
+Pass `base_url` if you are running a self-hosted Sentry.
+
+The `exception` value is `str(exception)`, except on the Celery path, where Celery's own exception info
+is used and the value is a full traceback.
+
+!!! note
+
+    The provider does not report the exception to Sentry itself. It assumes your application already
+    does that (e.g. via a framework integration) and reads back the event ID, which avoids reporting
+    the same exception twice.
+
+    To avoid linking to an unrelated event, the provider records Sentry's current event ID when the
+    task starts and only attaches context if it has changed by the time the task errors. So no context
+    is added when the exception never reaches Sentry, or when Sentry saw nothing new while the task ran.
+
+### Custom providers
+
+To attach context from another system, subclass `ContextProvider`, set an `identifier` and implement
+`capture_error_context`:
+
+```python
+from taskbadger.context_providers import ContextProvider
+
+
+class RequestIdProvider(ContextProvider):
+    identifier = "request"
+
+    def capture_error_context(self, exception, snapshot=None):
+        return {"id": get_current_request_id()}
+```
+
+Providers that read back state captured by another system, rather than capturing it themselves,
+should also implement `snapshot`. It is called when a tracked task starts and its return value is
+passed back as `snapshot`, so the provider can tell a fresh capture from a stale one left over from
+something unrelated.
+
 ## Python Reference
 
 ::: taskbadger.Task
@@ -152,6 +339,16 @@ access to the API:
 ::: taskbadger.create_task
 
 ::: taskbadger.update_task
+
+::: taskbadger.list_tasks
+
+::: taskbadger.TaskList
+
+## Context Provider Reference
+
+::: taskbadger.context_providers
+
+::: taskbadger.context_providers.sentry.SentryContextProvider
 
 ## Safe functions
 

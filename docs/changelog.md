@@ -7,6 +7,34 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
+## v2.5.2
+
+**2026-08-07**
+
+**Python SDK**
+
+* **FIX** [`taskbadger_track=False`](python-celery.md#opting-out) now opts a single Celery execution out of tracking, as an `apply_async` argument or in the message headers. Previously it could only ever enable tracking: it was ignored when the `CelerySystemIntegration` was auto-tracking, and `apply_async` overwrote it on tasks using `base=Task`.
+
+## v2.5.1
+
+**2026-08-07**
+
+**Python SDK**
+
+* **CHANGED** [`list_tasks`](python.md#listing-tasks) returns a `TaskList` of `taskbadger.Task` objects, which can be iterated over directly. It previously returned the generated `PaginatedTaskList`, whose `results` were internal models without the SDK's update methods. Note that an empty `TaskList` is falsy, where `PaginatedTaskList` was always truthy.
+* **FIX** Eager Celery tasks honour an explicit [`taskbadger_parent`](python-celery.md#subtasks), including `taskbadger_parent=None` to opt out of nesting.
+* **FIX** Copying or pickling a `Task` no longer recurses until the stack overflows.
+
+## v2.5.0
+
+**2026-08-06**
+
+**Python SDK**
+
+* **NEW** [Parent and child tasks](python.md#parent-and-child-tasks). Tasks can be nested one level deep via the [`parent`](data_model.md#parent) field on `create_task` / `update_task`, and `list_tasks` can filter by parent. The [`@track` decorator](python-decorator.md#nested-tasks), [Celery](python-celery.md#subtasks) and [Procrastinate](python-procrastinate.md#subtasks) integrations set it automatically for tasks enqueued from within a tracked task.
+* **NEW** [Context providers](python.md#error-context-providers), a pluggable way to attach extra data to a task when it errors, along with a [Sentry provider](python.md#sentry) that links a failed task to its Sentry issue. Install with `pip install 'taskbadger[sentry]'`.
+* **NEW** `Task.error` accepts an `exception` argument, which is passed to the configured context providers.
+
 ## v2.4.0
 
 **2026-07-30**

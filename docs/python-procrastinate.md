@@ -206,6 +206,19 @@ Task Badger task, so you can monitor the history and health of your scheduled jo
 The name of the Procrastinate queue a task is deferred to is automatically recorded on the Task Badger
 task's [`queue`](data_model.md#queue) field.
 
+## Subtasks
+
+==Since v2.5.0==
+
+A job deferred from inside a tracked task is automatically nested under it via the
+[`parent`](data_model.md#parent) field, so you can see the work a job spawned.
+
+Tasks nest a single level deep, so a job deferred by a task that is itself a child becomes a sibling
+of that child rather than a grandchild.
+
+Nesting relies on the same wrapping as the rest of the integration, so the cases listed under
+[Known Limitations](#known-limitations) are neither tracked nor nested.
+
 ## External ID
 
 The Procrastinate job ID is automatically recorded on the Task Badger task's
