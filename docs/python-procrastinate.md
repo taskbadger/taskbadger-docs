@@ -216,7 +216,7 @@ A job deferred from inside a tracked task is automatically nested under it via t
 Tasks nest a single level deep, so a job deferred by a task that is itself a child becomes a sibling
 of that child rather than a grandchild.
 
-Nesting relies on the same wrapping as the rest of the integration, so the deferrals listed under
+Nesting relies on the same wrapping as the rest of the integration, so the cases listed under
 [Known Limitations](#known-limitations) are neither tracked nor nested.
 
 ## External ID

@@ -110,14 +110,17 @@ You can pass additional parameters to the Task Badger `Task` class which will be
 This can be done by passing keyword arguments prefixed with `taskbadger_` to the `.apply_async()` function or
 to the task decorator.
 
-!!! warning "`taskbadger_` arguments require the task base class"
+!!! warning "`taskbadger_` arguments to `apply_async` require the task base class"
 
     It is `taskbadger.celery.Task` that intercepts `taskbadger_`-prefixed arguments to `apply_async`, so
-    they only work on tasks declared with `base=Task`. On a plain Celery task they are silently ignored:
+    those only work on tasks declared with `base=Task`. On a plain Celery task they are silently ignored:
     the task still publishes, and is still tracked if the
     [system integration](#celery-system-integration) tracks it, but the options have no effect.
 
-    To customize a task that is tracked by the system integration alone, pass the options in the
+    `taskbadger_` arguments on the **task decorator** are not affected. They are read off the task class
+    when the task is published, so they apply whether or not the task uses `base=Task`.
+
+    To set options per call on a task that is tracked by the system integration alone, pass them in the
     message headers instead — see [Customization without the task base class](#customization-without-the-task-base-class).
 
 ```python
@@ -180,6 +183,16 @@ my_task.apply_async(
 Unlike the `taskbadger_`-prefixed arguments, the header is read when the task is published rather than
 by the task class, so no `base=Task` is needed. It takes the same options as `taskbadger_kwargs`, minus
 the prefix, and takes precedence over values set on the task decorator.
+
+!!! warning "Eager tasks read fewer options from the header"
+
+    That applies to tasks which are actually published. When Celery runs a task [eagerly][always_eager]
+    nothing is published, so the Task Badger task is created as the task starts instead, reading the
+    header directly. Only `parent`, `heartbeat_interval` and `stale_timeout` are honoured there —
+    `name`, `value_max` and `data` are ignored.
+
+    `taskbadger_track` is also *required* for an eager task that doesn't use `base=Task`, even if the
+    system integration would otherwise track it.
 
 If the task would not otherwise be tracked — it isn't using the base class and doesn't match the system
 integration's tracking rules — add `taskbadger_track` to the headers to track it anyway:
@@ -355,18 +368,30 @@ task a root task even though it was published from inside a tracked task:
 
 ```python
 # nest under a different task
-my_task.apply_async(taskbadger_parent=other_task.id)
+my_task.apply_async(args=[arg1, arg2], taskbadger_parent=parent_task.id)
 
 # opt out of nesting
-my_task.apply_async(taskbadger_parent=None)
+my_task.apply_async(args=[arg1, arg2], taskbadger_parent=None)
 ```
 
-As with the other `taskbadger_` arguments this requires the task to use `base=Task`; without it, pass
-`headers={"taskbadger_kwargs": {"parent": None}}` instead. See
+`taskbadger_parent` takes a **Task Badger** task ID, not a Celery task or result ID.
+
+As with the other `taskbadger_` arguments to `apply_async` this requires the task to use `base=Task`;
+without it, pass `headers={"taskbadger_kwargs": {"parent": None}}` instead. See
 [Customization without the task base class](#customization-without-the-task-base-class).
 
-==Since v2.5.1== eager tasks and [canvas primitives](#canvas-primitives-map-starmap-chunks) honour
-`taskbadger_parent` too; before that they always nested under the enclosing task.
+==Since v2.5.1== eager tasks honour `taskbadger_parent`; before that they always nested under the
+enclosing task.
+
+!!! warning "Canvas primitives ignore `taskbadger_parent`"
+
+    [Canvas primitives](#canvas-primitives-map-starmap-chunks) (`map`, `starmap`, `chunks`) are
+    published under Celery's own `celery.map` / `celery.starmap` task rather than your own, so
+    `taskbadger_parent` is never intercepted and the `taskbadger_kwargs` header doesn't reach the
+    worker. On a worker their parent can't be set per call, and they are not nested at all.
+
+    Run eagerly they do nest under the enclosing task, and there the parent can be overridden with
+    `headers={"taskbadger_kwargs": {"parent": ...}}`.
 
 ## External ID
 
@@ -376,8 +401,42 @@ originating Celery task.
 
 ## Opting out
 
-If you want to prevent TaskBadger from tracking a particular execution, set the `taskbadger_track` header (False) when publishing:
+To stop Task Badger tracking a single execution, set `taskbadger_track` to `False`, either as an
+argument to `apply_async` or in the message headers:
 
 ```python
+# as an argument — needs base=Task
+my_task.apply_async(args=[arg1, arg2], taskbadger_track=False)
+
+# in the headers — works for any task
+my_task.apply_async(args=[arg1, arg2], headers={"taskbadger_track": False})
+
+# canvas primitives take the header form only
 add.map([(1, 2), (2, 3)]).apply_async(headers={"taskbadger_track": False})
 ```
+
+This takes precedence over the `CelerySystemIntegration`, so it opts out even when `auto_track_tasks`
+is on, and over the `base=Task` class.
+
+The value must be exactly `False`. Omitting it leaves tracking to the normal rules.
+
+!!! warning "The argument form needs the task base class"
+
+    As with the other [`taskbadger_` arguments to `apply_async`](#task-customization),
+    `taskbadger_track=False` is intercepted by `taskbadger.celery.Task`, so it only works on tasks
+    declared with `base=Task`. On a plain Celery task, or on a
+    [canvas primitive](#canvas-primitives-map-starmap-chunks), it is silently ignored and the task
+    stays tracked.
+
+    The header form works in all three cases, so prefer it unless you know the task uses `base=Task`.
+
+To exclude a task from tracking on every call rather than per execution, use the `excludes` argument to
+[`CelerySystemIntegration`](#celery-system-integration), which matches on task name.
+
+!!! warning "Only works from v2.5.2"
+
+    ==Since v2.5.2==
+
+    Before that this header could only ever *enable* tracking, never suppress it. `False` was
+    indistinguishable from omitting the header, and `apply_async` on a `base=Task` task overwrote it
+    with `True`. On earlier versions use `excludes` instead.

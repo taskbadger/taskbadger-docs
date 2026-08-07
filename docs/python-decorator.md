@@ -30,6 +30,10 @@ from the body, as well as [Celery](python-celery.md#subtasks) and
 [Procrastinate](python-procrastinate.md#subtasks) tasks enqueued from it. A bare `Task.create` in the
 function body is not nested unless you pass `parent` yourself.
 
+Each integration carves out some exceptions — Celery, for instance, doesn't nest chain successors,
+`link` callbacks, or canvas primitives running on a worker. The [Celery](python-celery.md#subtasks) and
+[Procrastinate](python-procrastinate.md#subtasks) pages list what does and doesn't get nested.
+
 Tasks nest a single level deep, so anything created by a decorated function that is itself a child
 becomes a sibling of that child rather than a grandchild. Passing `parent` to the decorator explicitly
 overrides the automatic nesting.

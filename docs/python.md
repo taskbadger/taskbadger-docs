@@ -86,8 +86,8 @@ for task in taskbadger.list_tasks(page_size=50):
         task.canceled()
 ```
 
-The `next_` and `previous` attributes hold the URL of the adjacent page, or are unset if there isn't
-one. To fetch the next page, pass its `cursor` query parameter back to `list_tasks`:
+The `next_` and `previous` attributes hold the URL of the adjacent page, or `None` if there isn't one.
+To fetch the next page, pass its `cursor` query parameter back to `list_tasks`:
 
 ```python
 from urllib.parse import parse_qs, urlparse
@@ -127,7 +127,8 @@ child = Task.create("import.chunk", parent=parent.id)
 ```
 
 Tasks nest a single level deep, so `parent` must be the ID of a task that is not itself a child.
-A task's parent can not be changed once it has been set.
+A task's parent can not be changed once it has been set. Both rules are enforced by the API rather
+than by the SDK, so breaking either one surfaces as a failed request.
 
 Use `list_tasks` to fetch the children of a task:
 
@@ -141,7 +142,11 @@ for child in taskbadger.list_tasks(parent=parent.id):
 `Task.create` and `create_task` only nest a task when you pass `parent` explicitly. The
 [function decorator](python-decorator.md#nested-tasks), [Celery](python-celery.md#subtasks) and
 [Procrastinate](python-procrastinate.md#subtasks) integrations do it for you: a task enqueued while
-another tracked task is running is nested under it automatically.
+another tracked task is running is nested under it automatically. Because nesting is capped at one
+level, a task enqueued from within a *child* becomes a sibling of that child rather than a grandchild.
+
+Each integration excludes a few cases from the automatic nesting — see the linked pages for what
+does and doesn't get nested.
 
 ### Connection management
 
@@ -217,9 +222,24 @@ def before_create(task_data: dict) -> dict:
 
 Context providers attach extra data to a task when it errors, for example a link back to the system
 that reported the exception. They are consulted whenever a tracked task fails — via the
-[function decorator](python-decorator.md), the [Celery](python-celery.md) or
-[Procrastinate](python-procrastinate.md) integrations, or `Task.error(exception=...)` — and whatever
-a provider returns is stored on the task [`data`](data_model.md#data) under the provider's identifier.
+[function decorator](python-decorator.md), or the [Celery](python-celery.md) or
+[Procrastinate](python-procrastinate.md) integrations — and whatever a provider returns is stored on
+the task [`data`](data_model.md#data) under the provider's identifier.
+
+You can also call `Task.error(exception=...)` yourself, but read the caveat below first.
+
+!!! warning "`Task.error()` on its own has no baseline"
+
+    Those three integrations record the state of each provider as the task *starts*, so a provider can
+    tell context belonging to this task from context left over from something unrelated.
+
+    Calling `task.error(exception=...)` directly does consult the providers, but nothing took that
+    baseline, so they have nothing to compare against. With
+    [`SentryContextProvider`](#sentry) that means the task gets a link to whatever
+    `sentry_sdk.last_event_id()` happens to be — quite possibly a stale, unrelated issue.
+
+    Prefer letting an integration own the error path. If you must call `Task.error` yourself and the
+    link matters, pass the context in explicitly via `data` instead of relying on a provider.
 
 Providers are registered with `taskbadger.init`:
 
@@ -238,8 +258,9 @@ task update.
 
 ### Sentry
 
-`SentryContextProvider` links a failed task to the Sentry issue for the same exception. It requires
-the `sentry-sdk` package, available via the `sentry` extra:
+`SentryContextProvider` links a failed task to the Sentry issue for the same exception. It needs the
+`sentry-sdk` package, available via the `sentry` extra. If the package isn't installed the provider is
+a silent no-op — it adds no context and reports no error, so install the extra:
 
 ```bash
 uv add 'taskbadger[sentry]'
@@ -271,11 +292,18 @@ Failed tasks then carry the Sentry event ID in their data, plus a link to the is
 
 Pass `base_url` if you are running a self-hosted Sentry.
 
+The `exception` value is `str(exception)`, except on the Celery path, where Celery's own exception info
+is used and the value is a full traceback.
+
 !!! note
 
     The provider does not report the exception to Sentry itself. It assumes your application already
     does that (e.g. via a framework integration) and reads back the event ID, which avoids reporting
-    the same exception twice. If the exception never reaches Sentry, no context is added.
+    the same exception twice.
+
+    To avoid linking to an unrelated event, the provider records Sentry's current event ID when the
+    task starts and only attaches context if it has changed by the time the task errors. So no context
+    is added when the exception never reaches Sentry, or when Sentry saw nothing new while the task ran.
 
 ### Custom providers
 
