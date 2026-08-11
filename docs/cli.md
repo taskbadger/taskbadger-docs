@@ -114,6 +114,11 @@ When using a legacy API key, the following additional variables are required:
 * `TASKBADGER_ORG`
 * `TASKBADGER_PROJECT`
 
+Optional:
+
+* `TASKBADGER_HTTP_TIMEOUT` — Timeout in seconds for API requests, 5 by default.
+  See [Request timeout](python.md#request-timeout). ==Since v2.6.0==
+
 ### Configuration file
 
 The CLI includes a convenience command to create the configuration file. Running the `configure`

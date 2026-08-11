@@ -7,6 +7,14 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
+## v2.6.0
+
+**2026-08-11**
+
+**Python SDK**
+
+* **CHANGED** API requests now [time out](python.md#request-timeout) after 5 seconds instead of never. Override with `init(timeout=...)` or the `TASKBADGER_HTTP_TIMEOUT` environment variable, which the [CLI](cli.md#environment-variables) also honours.
+
 ## v2.5.2
 
 **2026-08-07**

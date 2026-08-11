@@ -34,6 +34,7 @@ page in the [Task Badger dashboard](https://taskbadger.net).
 | systems           | System integrations such as [Celery](python-celery.md)                                                    |
 | before_create     | A function that is called before a task is created. See [Before Create Callback](#before-create-callback) |
 | context_providers | Providers that attach extra data to a task when it errors. See [Error Context Providers](#error-context-providers) |
+| timeout           | Timeout for API requests. See [Request timeout](#request-timeout)                                         |
 | organization_slug | The organization identifier. Only required for legacy API keys.                                           |
 | project_slug      | The project identifier. Only required for legacy API keys.                                                |
 
@@ -42,6 +43,33 @@ If you attempt to use the SDK without configuring it you will get an error. To a
 
 !!! tip
     [Tags](data_model.md#tags) provided here will be applied to all tasks created using the SDK. If you need to add tags to individual tasks you can do so using the create and update methods or the `task.add_tag` method. Tags added manually will override the global tags.
+
+### Request timeout
+
+==Since v2.6.0==
+
+API requests time out after 5 seconds. Override it with the `timeout` argument, in seconds:
+
+```python
+import taskbadger
+
+taskbadger.init(token="YOUR_API_KEY", timeout=30)
+```
+
+The `TASKBADGER_HTTP_TIMEOUT` environment variable sets the default when `timeout` isn't passed,
+and is also how you configure the timeout for the [CLI](cli.md#environment-variables).
+
+For finer control pass an [`httpx.Timeout`](https://www.python-httpx.org/advanced/timeouts/),
+which lets you set the connect, read, write and pool timeouts separately:
+
+```python
+import httpx
+import taskbadger
+
+taskbadger.init(token="YOUR_API_KEY", timeout=httpx.Timeout(10, connect=2))
+```
+
+Passing `httpx.Timeout(None)` disables timeouts entirely.
 
 ## Usage
 
