@@ -65,7 +65,7 @@ Task created: https://taskbadger.net/public/tasks/xyz/
 ```
 
 If the command completes with a non-zero exit code the task status will be set to `error`.
-To get notified when that happens, configure an [action](actions.md) in the web UI.
+To get notified when that happens, configure an [alert](alerts.md) in the web UI.
 
 See more about the [CLI](cli.md).
 
@@ -174,7 +174,7 @@ Here we update the task `status` and `value`. By default, a task's value can ran
 ### Get notified about the task
 
 To get notified when the task completes, fails, or reaches a progress threshold, configure an
-[action](actions.md) in the web UI. Actions apply across your tasks, so there's no need to
+[alert](alerts.md) in the web UI. Alerts apply across your tasks, so there's no need to
 attach them in code.
 
 ### Mark the task complete

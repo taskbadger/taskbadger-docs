@@ -23,7 +23,7 @@ task URL is:
 !!!note "Deprecation"
     The endpoints for adding and updating task actions (as well as the `actions` field on the
     create/update task endpoints) are **deprecated** and will be removed in a future release.
-    Configure [actions](actions.md) in the web UI instead.
+    Configure [alerts](alerts.md) in the web UI instead.
 
 Full details of the API endpoints can be viewed at [https://taskbadger.net/api/docs/](https://taskbadger.net/api/docs/){:target="_blank"}
 

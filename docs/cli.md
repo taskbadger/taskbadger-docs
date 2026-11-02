@@ -64,8 +64,8 @@ For more details on these commands run `taskbadger <command> --help`.
 
 !!!note "Deprecation"
     The `--action` (`-a`) argument for attaching actions to CLI tasks is **deprecated** and
-    will be removed in a future release. Configure [actions](actions.md) in the web UI instead.
-    Actions apply across your tasks, so you no longer need to attach them per command.
+    will be removed in a future release. Configure [alerts](alerts.md) in the web UI instead.
+    Alerts apply across your tasks, so you no longer need to attach actions per command.
 
 ## Configuration
 

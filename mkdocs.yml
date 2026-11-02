@@ -78,6 +78,7 @@ nav:
     - 'cli.md'
     - 'monitors.md'
     - 'data_model.md'
+    - 'alerts.md'
     - 'actions.md'
     - 'api.md'
     - 'integrations.md'

@@ -224,10 +224,9 @@ modified again (with the potential exception of 'stale').
     to any other state via an update.
 
 
-## Actions
+## Alerts and actions
 
-Actions are at the core of Task Badger's alerting. They allow you to send notifications, perform callouts,
-and more based on task events.
+Task events such as status changes, progress thresholds and exceeding `max_runtime` can notify you
+via [alerts](alerts.md), which are configured in the web UI and apply across your tasks.
 
-Actions are configured in the web UI and apply across your tasks. See [Actions](actions.md) for
-details on channels and triggers.
+[Actions](actions.md) are the older, deprecated per-task equivalent, attached to a task via the API.
