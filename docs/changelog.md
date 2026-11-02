@@ -11,7 +11,7 @@ Full release notes for the Python SDK are available on [GitHub](https://github.c
 
 **Python SDK**
 
-* **CHANGED** Celery retries are marked with [`is_retry`](data_model.md#is_retry), and the first 3 retries of a task no longer count towards your monthly task allocation.
+* **CHANGED** Celery retries are marked with [`retry_of`](data_model.md#retry_of), and the first 3 retries of a task, including tasks in a fan-out, no longer count towards your monthly task allocation.
 
 ## v2.6.0
 

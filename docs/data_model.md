@@ -92,16 +92,22 @@ The main attributes or a task are:
     `track` decorator sets it on a decorated function called from within one. Each integration
     excludes some cases — see [Python SDK](python.md#parent-and-child-tasks) for details.
 
-<a name="is_retry"></a>
-`is_retry`
+<a name="retry_of"></a>
+`retry_of`
 
-:   Set to `true` when creating a task that is a retry of its `parent`. The first 3 retries of a
-    parent are not counted against your monthly task allocation; retry 4 and later are counted like
-    any other task. Retries follow the same rules as children: they can't be nested, so the parent
-    must not itself be a child. A retry created without a `parent` is stored as an ordinary new task
-    (`is_retry` is returned as `false`). It can only be set when the task is created — updates ignore it.
+:   The ID of the first attempt of the task this task is a retry of. Set it when creating a retry.
+    The first 3 retries of a task are not counted against your monthly task allocation; retry 4 and
+    later are counted like any other task.
 
-    The Celery integration sets it automatically for retries.
+    A retry is nested like a child of the original task: under it when the original is a top-level
+    task, and alongside it under the same parent when the original is itself a child (for example a
+    task in a fan-out). Either way nesting stays one level deep. If you give a `parent` it must match
+    that rule. A retry of a retry should point at the original first attempt, and a request that
+    points at a retry is rejected. It can only be set when the task is created.
+
+    The Celery integration sets it automatically for retries. `is_retry` is the deprecated
+    predecessor: it marks a retry of a top-level `parent`, and is returned as `true` for any task with
+    a `retry_of`.
 
 ### Example Task
 
@@ -132,6 +138,7 @@ The main attributes or a task are:
   "queue": "default",
   "external_id": "celery-abc-123",
   "parent": null,
+  "retry_of": null,
   "is_retry": false
 }
 ```

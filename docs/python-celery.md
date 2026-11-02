@@ -349,10 +349,10 @@ What gets nested:
 - Tasks published from the body of a tracked task via `.delay()` or `.apply_async()`, including when
   Celery runs them eagerly.
 - Retries, which are nested under the first attempt and marked with
-  [`is_retry`](data_model.md#is_retry). The first 3 retries of a task don't count towards your monthly
-  task allocation; retry 4 and later do. A retry of a task that is itself a child of another task
-  (for example, a task in a fan-out) can't be nested a level deeper, so it is created as a sibling and
-  counts like any other task.
+  [`retry_of`](data_model.md#retry_of). The first 3 retries of a task don't count towards your monthly
+  task allocation; retry 4 and later do. This includes retries of a task that is itself part of
+  another (a fan-out child): the retry is created alongside it under the same parent rather than a
+  level deeper, and has its own 3 free retries.
 
 What does not get nested:
 
