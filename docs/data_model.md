@@ -105,9 +105,7 @@ The main attributes or a task are:
     that rule. A retry of a retry should point at the original first attempt, and a request that
     points at a retry is rejected. It can only be set when the task is created.
 
-    The Celery integration sets it automatically for retries. `is_retry` is the deprecated
-    predecessor: it marks a retry of a top-level `parent`, and is returned as `true` for any task with
-    a `retry_of`.
+    The Celery integration sets it automatically for retries.
 
 ### Example Task
 
@@ -138,8 +136,7 @@ The main attributes or a task are:
   "queue": "default",
   "external_id": "celery-abc-123",
   "parent": null,
-  "retry_of": null,
-  "is_retry": false
+  "retry_of": null
 }
 ```
 
