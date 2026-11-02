@@ -19,7 +19,7 @@ longer need to attach alerting to individual tasks in your code.
 
 An action combines two things:
 
-- A **channel** — the reusable destination that delivers the notification (email, web hook).
+- A **channel** — the reusable destination that delivers the notification (email, Slack, web hook).
   Channels are configured once under **Integrations** and can be reused by many actions.
 - A **trigger** — the task event(s) that cause the action to fire.
 
