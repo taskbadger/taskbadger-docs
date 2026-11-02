@@ -92,6 +92,17 @@ The main attributes or a task are:
     `track` decorator sets it on a decorated function called from within one. Each integration
     excludes some cases — see [Python SDK](python.md#parent-and-child-tasks) for details.
 
+<a name="is_retry"></a>
+`is_retry`
+
+:   Set to `true` when creating a task that is a retry of its `parent`. The first 3 retries of a
+    parent are not counted against your monthly task allocation; retry 4 and later are counted like
+    any other task. Retries follow the same rules as children: they can't be nested, so the parent
+    must not itself be a child. A retry created without a `parent` is stored as an ordinary new task
+    (`is_retry` is returned as `false`). It can only be set when the task is created — updates ignore it.
+
+    The Celery integration sets it automatically for retries.
+
 ### Example Task
 
 ```json
@@ -120,7 +131,8 @@ The main attributes or a task are:
   ],
   "queue": "default",
   "external_id": "celery-abc-123",
-  "parent": null
+  "parent": null,
+  "is_retry": false
 }
 ```
 

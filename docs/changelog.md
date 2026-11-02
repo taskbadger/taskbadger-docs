@@ -7,6 +7,12 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
+## Unreleased
+
+**Python SDK**
+
+* **CHANGED** Celery retries are marked with [`is_retry`](data_model.md#is_retry), and the first 3 retries of a task no longer count towards your monthly task allocation.
+
 ## v2.6.0
 
 **2026-08-11**
