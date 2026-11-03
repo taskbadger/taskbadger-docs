@@ -105,7 +105,7 @@ The main attributes or a task are:
     that rule. A retry of a retry should point at the original first attempt, and a request that
     points at a retry is rejected. It can only be set when the task is created.
 
-    The Celery integration sets it automatically for retries.
+    The Celery integration sets it automatically for retries ==since v2.7.0==.
 
 ### Example Task
 

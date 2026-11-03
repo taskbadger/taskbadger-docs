@@ -7,7 +7,9 @@ hide:
 
 Full release notes for the Python SDK are available on [GitHub](https://github.com/taskbadger/taskbadger-python/releases).
 
-## Unreleased
+## v2.7.0
+
+**2026-11-03**
 
 **Python SDK**
 

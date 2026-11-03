@@ -348,7 +348,7 @@ What gets nested:
 
 - Tasks published from the body of a tracked task via `.delay()` or `.apply_async()`, including when
   Celery runs them eagerly.
-- Retries, which are nested under the first attempt and marked with
+- Retries, which are nested under the first attempt. ==Since v2.7.0== they are also marked with
   [`retry_of`](data_model.md#retry_of). The first 3 retries of a task don't count towards your monthly
   task allocation; retry 4 and later do. This includes retries of a task that is itself part of
   another (a fan-out child): the retry is created alongside it under the same parent rather than a
